@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>H3Z - Minijuegos & Comunidad</title>
+    <!-- FUENTE GOOGLE FONTS: LILITA ONE -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    
+   <!-- Agrega ?v=1.1 al final del enlace del CSS -->
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=1.1">
+</head>
+<body>
+
+    <canvas id="bg-canvas"></canvas>
+
+    <!-- NAVEGACIÓN PRINCIPAL -->
+    <header class="navbar">
+        <div class="logo">🔥 H3Z</div>
+        <nav class="nav-links">
+            <button class="nav-btn active" onclick="switchSection('sec-quienes-somos')">INICIO</button>
+            <button class="nav-btn" onclick="switchSection('sec-minijuegos')">MINIJUEGOS 🎮</button>
+            <button class="nav-btn" onclick="switchSection('sec-premios')">PREMIOS 🎁</button>
+        </nav>
+        <div class="user-profile">🪙 Monedas: <span id="user-coins">90</span></div>
+    </header>
+
+    <main class="dashboard-container">
+
+        <!-- 1. SECCIÓN INICIO -->
+        <section id="sec-quienes-somos" class="content-section active">
+            <div class="hero-card">
+                <h1>¡BIENVENIDO A LA COMUNIDAD DE BIRRIAS! 🌵🔥</h1>
+                <p class="hero-subtitle">Juega, gana monedas y canjea premios exclusivos de Brawl Stars.</p>
+                <button class="btn-orange btn-hero" onclick="switchSection('sec-minijuegos')">🎯 IR A LOS MINIJUEGOS</button>
+            </div>
+        </section>
+
+        <!-- 2. SECCIÓN MINIJUEGOS -->
+        <section id="sec-minijuegos" class="content-section">
+            <div class="section-title-wrapper">
+                <span class="badge-tag">✨ JUEGO DESTACADO</span>
+                <h2>Ruleta de Premios</h2>
+                <p>¡Gira la ruleta y gana increíbles recompensas!</p>
+            </div>
+
+            <!-- TARJETA HORIZONTAL: RULETA -->
+            <div class="game-card-horizontal">
+                <div class="game-left-side">
+                    <span class="status-pill">⚡ DISPONIBLE</span>
+                    <div class="roulette-wrapper">
+                        <div class="wheel-pointer">▼</div>
+                        <canvas id="roulette-canvas" width="280" height="280"></canvas>
+                    </div>
+                </div>
+
+                <div class="game-right-side">
+                    <h3>¡Gira y Gana Premios!</h3>
+                    <p class="game-desc">Consigue <strong>gemas</strong>, <strong>puntos de fuerza</strong> y <strong>recompensas exclusivas</strong> de Brawl Stars en cada giro.</p>
+
+                    <div class="stats-row">
+                        <div class="stat-box">
+                            <span class="stat-value">🪙 100</span>
+                            <span class="stat-label">PREMIO MÁXIMO</span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="stat-value">2.3K+</span>
+                            <span class="stat-label">JUGADORES</span>
+                        </div>
+                    </div>
+
+                    <button class="btn-orange" onclick="spinRoulette()">🎯 ¡GIRAR RULETA!</button>
+                    <button class="btn-purple" onclick="comprarIntentoRuleta()">⚡ Comprar 1 intento extra (🪙 50)</button>
+                    <p class="foot-note">⏳ Reset 8AM | Intentos restantes: <strong id="intentos-ruleta-val">1</strong></p>
+                </div>
+            </div>
+
+            <!-- TARJETA HORIZONTAL: CAJA FUERTE -->
+            <div class="game-card-horizontal">
+                <div class="game-left-side">
+                    <span class="status-pill">🔒 CAJA FUERTE</span>
+                    <div class="safe-illustration">🔐</div>
+                    <div class="code-display">
+                        <div class="digit-box" id="digit-1">_</div>
+                        <div class="digit-box" id="digit-2">_</div>
+                        <div class="digit-box" id="digit-3">_</div>
+                    </div>
+                </div>
+
+                <div class="game-right-side">
+                    <h3>¡Descifra el Código Secreto!</h3>
+                    <p class="game-desc">Introduce la combinación correcta de 3 dígitos para abrir la caja y llevarte el botín.</p>
+
+                    <div class="keypad">
+                        <button onclick="pressKey(1)">1</button>
+                        <button onclick="pressKey(2)">2</button>
+                        <button onclick="pressKey(3)">3</button>
+                        <button onclick="pressKey(4)">4</button>
+                        <button onclick="pressKey(5)">5</button>
+                        <button onclick="pressKey(6)">6</button>
+                        <button onclick="pressKey(7)">7</button>
+                        <button onclick="pressKey(8)">8</button>
+                        <button onclick="pressKey(9)">9</button>
+                        <div class="empty-key"></div>
+                        <button onclick="pressKey(0)">0</button>
+                        <button class="btn-delete" onclick="deleteKey()">⌫</button>
+                    </div>
+
+                    <button class="btn-orange" onclick="openSafe()">🔓 ABRIR CAJA FUERTE</button>
+                    <button class="btn-purple" onclick="comprarIntentosCaja()">🔑 Comprar 3 intentos (🪙 75)</button>
+                    <p class="foot-note">⏳ Reset 8AM | Intentos restantes: <strong id="intentos-caja-val">1</strong></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. SECCIÓN PREMIOS -->
+        <section id="sec-premios" class="content-section">
+            <div class="hero-card">
+                <h2>🎁 TIENDA DE PREMIOS</h2>
+                <p class="hero-subtitle">Próximamente disponibles nuevos pases de batalla y recompensas.</p>
+            </div>
+        </section>
+
+    </main>
+
+    <script src="{{ url_for('static', filename='js/trivia.js') }}"></script>
+</body>
+</html>

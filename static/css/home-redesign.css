@@ -1,0 +1,292 @@
+/* Identidad visual de la portada de Birrias */
+.home-hero {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    border-color: rgba(151, 113, 255, .48);
+    background:
+        radial-gradient(ellipse at 100% 0%, rgba(31, 199, 255, .13), transparent 42%),
+        radial-gradient(ellipse at 0% 100%, rgba(255, 59, 137, .12), transparent 45%),
+        linear-gradient(145deg, rgba(37, 19, 68, .94), rgba(10, 18, 43, .96));
+    box-shadow: 0 24px 80px rgba(0, 0, 0, .34), 0 0 55px rgba(116, 61, 255, .19);
+}
+
+.home-hero::before {
+    position: absolute;
+    z-index: -1;
+    top: -105px;
+    right: -105px;
+    width: 250px;
+    aspect-ratio: 1;
+    border: 1px solid rgba(107, 232, 255, .15);
+    border-radius: 50%;
+    box-shadow: 0 0 0 22px rgba(107, 232, 255, .025), 0 0 0 48px rgba(107, 232, 255, .02);
+    content: "";
+    pointer-events: none;
+}
+
+.home-brand-lockup {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    width: 100%;
+    margin-bottom: 27px;
+}
+
+.home-brand-avatar {
+    width: 48px;
+    height: 48px;
+    flex: 0 0 auto;
+    border: 2px solid rgba(255, 255, 255, .88);
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 0 0 4px rgba(164, 99, 255, .2), 0 5px 18px rgba(0, 0, 0, .3);
+}
+
+.home-brand-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.home-brand-copy strong {
+    color: #fff;
+    font-family: 'Lilita One', cursive;
+    font-size: 17px;
+    letter-spacing: .9px;
+}
+
+.home-brand-copy small {
+    color: #a9a2c3;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 1px;
+}
+
+.home-brand-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    margin-left: auto;
+    padding: 8px 11px;
+    border: 1px solid rgba(34, 228, 170, .24);
+    border-radius: 999px;
+    background: rgba(34, 228, 170, .07);
+    color: #a6ffdc;
+    font-size: 9px;
+    font-weight: 900;
+    letter-spacing: .7px;
+}
+
+.home-brand-status span {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #22e4aa;
+    box-shadow: 0 0 10px rgba(34, 228, 170, .8);
+}
+
+.home-title span {
+    background-image: linear-gradient(100deg, #63f3ff 5%, #a78bfa 52%, #ff79c6 100%);
+    background-size: 180% auto;
+    animation: homeTitleShimmer 7s ease-in-out infinite alternate;
+}
+
+.home-description strong {
+    color: transparent;
+    background: linear-gradient(90deg, #76f2ff, #b39aff);
+    -webkit-background-clip: text;
+    background-clip: text;
+}
+
+.home-youtube-link {
+    box-shadow: 0 12px 30px rgba(239, 55, 91, .3), inset 0 1px 0 rgba(255, 255, 255, .2);
+}
+
+.home-topics span {
+    padding: 8px 12px;
+    border-color: rgba(180, 155, 230, .25);
+    background: linear-gradient(135deg, rgba(255, 255, 255, .065), rgba(255, 255, 255, .025));
+    transition: transform .2s ease, border-color .2s ease, background .2s ease;
+}
+
+.home-topics span:hover {
+    transform: translateY(-2px);
+    border-color: rgba(117, 226, 255, .45);
+    background: rgba(92, 188, 255, .1);
+}
+
+.home-shorts-card {
+    position: relative;
+    overflow: hidden;
+    border-color: rgba(110, 232, 255, .38);
+    background:
+        radial-gradient(ellipse at 100% 0%, rgba(0, 204, 255, .12), transparent 40%),
+        linear-gradient(155deg, rgba(13, 28, 57, .96), rgba(31, 12, 53, .97));
+}
+
+.home-shorts-card::before {
+    position: absolute;
+    top: -95px;
+    right: -65px;
+    width: 170px;
+    height: 170px;
+    border: 1px solid rgba(255, 255, 255, .08);
+    border-radius: 50%;
+    box-shadow: 0 0 0 18px rgba(255, 255, 255, .02), 0 0 0 40px rgba(255, 255, 255, .018);
+    content: "";
+    pointer-events: none;
+}
+
+.home-cover-brawl-mark {
+    z-index: 1;
+}
+
+.home-cover-brawl-mark img {
+    display: block;
+    width: 64%;
+    height: 64%;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 4px rgba(38, 16, 78, .3));
+}
+
+.home-cover-brawler {
+    position: absolute;
+    z-index: 1;
+    right: 9%;
+    bottom: 27%;
+    width: clamp(34px, 4vw, 47px);
+    height: clamp(34px, 4vw, 47px);
+    padding: 5px;
+    border: 1px solid rgba(255, 255, 255, .72);
+    border-radius: 50%;
+    background: linear-gradient(145deg, #9b5cff, #ff4f91);
+    filter: drop-shadow(0 5px 9px rgba(34, 10, 73, .45));
+    animation: homeCharacterFloat 3.4s ease-in-out infinite;
+}
+
+.home-cover-caption strong {
+    font-size: clamp(12px, 1.4vw, 17px);
+}
+
+.home-short-copy h3 {
+    background: linear-gradient(90deg, #fff, #b9ecff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.home-short-cta {
+    transition: color .2s ease;
+}
+
+.home-short-link:hover .home-short-cta {
+    color: #fff;
+}
+
+.home-channel-highlights {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+    width: 100%;
+    margin-top: 18px;
+    text-align: left;
+}
+
+@media (min-width: 801px) {
+    body.bg-inicio .daily-streak-button {
+        top: clamp(76px, 9vh, 100px);
+        bottom: auto;
+    }
+}
+
+.home-highlight {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+    padding: 14px 16px;
+    border: 1px solid rgba(156, 128, 220, .2);
+    border-radius: 18px;
+    background: linear-gradient(120deg, rgba(27, 23, 58, .82), rgba(12, 20, 43, .86));
+    box-shadow: 0 12px 32px rgba(0, 0, 0, .16);
+    transition: transform .22s ease, border-color .22s ease, background .22s ease;
+}
+
+.home-highlight:hover {
+    transform: translateY(-3px);
+    border-color: rgba(93, 220, 255, .42);
+    background: linear-gradient(120deg, rgba(38, 30, 77, .95), rgba(13, 30, 57, .95));
+}
+
+.home-highlight-icon {
+    display: grid;
+    width: 42px;
+    height: 42px;
+    flex: 0 0 auto;
+    place-items: center;
+    overflow: hidden;
+    border: 1px solid rgba(159, 130, 255, .28);
+    border-radius: 13px;
+    background: linear-gradient(145deg, rgba(132, 76, 255, .22), rgba(0, 207, 255, .12));
+}
+
+.home-highlight-icon img {
+    width: 29px;
+    height: 29px;
+    object-fit: contain;
+}
+
+.home-highlight-news img {
+    width: 28px;
+    height: 28px;
+}
+
+.home-highlight-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+}
+
+.home-highlight-copy strong {
+    color: #9feeff;
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: 1px;
+}
+
+.home-highlight-copy small {
+    overflow: hidden;
+    color: #c0bad2;
+    font-size: 11px;
+    line-height: 1.4;
+    text-overflow: ellipsis;
+}
+
+@keyframes homeTitleShimmer {
+    from { background-position: 0% center; }
+    to { background-position: 100% center; }
+}
+
+@keyframes homeCharacterFloat {
+    0%, 100% { transform: translateY(0) rotate(5deg); }
+    50% { transform: translateY(-6px) rotate(-5deg); }
+}
+
+@media (max-width: 800px) {
+    .home-channel-highlights { grid-template-columns: 1fr; gap: 9px; }
+    .home-highlight { padding: 11px 13px; }
+}
+
+@media (max-width: 460px) {
+    .home-brand-lockup { gap: 9px; margin-bottom: 21px; }
+    .home-brand-avatar { width: 42px; height: 42px; }
+    .home-brand-status { gap: 5px; padding: 7px 8px; font-size: 8px; }
+    .home-brand-copy small { font-size: 8px; letter-spacing: .6px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .home-title span,
+    .home-cover-brawler { animation: none !important; }
+}

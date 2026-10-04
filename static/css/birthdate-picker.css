@@ -1,0 +1,157 @@
+.birthdate-picker {
+    position: relative;
+    width: 100%;
+}
+
+.birthdate-picker-source {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+}
+
+.birthdate-picker-trigger {
+    width: 100%;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 12px;
+    border: 1px solid rgba(167, 139, 250, .48);
+    border-radius: 10px;
+    background: linear-gradient(135deg, #160925, #21103a);
+    color: #e9ddff;
+    font: 600 14px 'Inter', sans-serif;
+    text-align: left;
+    cursor: pointer;
+    transition: border-color .18s ease, box-shadow .18s ease, transform .18s ease;
+}
+
+.birthdate-picker-trigger:hover,
+.birthdate-picker-trigger[aria-expanded="true"] {
+    border-color: #a78bfa;
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, .16);
+}
+
+.birthdate-picker-trigger:active { transform: scale(.995); }
+
+.birthdate-picker-placeholder { color: #a89ab9; font-weight: 500; }
+.birthdate-picker-icon { font-size: 18px; }
+
+.birthdate-calendar {
+    position: absolute;
+    z-index: 11000;
+    top: calc(100% + 7px);
+    left: 0;
+    width: min(320px, calc(100vw - 48px));
+    padding: 14px;
+    border: 1px solid rgba(167, 139, 250, .55);
+    border-radius: 16px;
+    background: linear-gradient(145deg, #211038, #10071d 88%);
+    box-shadow: 0 18px 48px rgba(0, 0, 0, .55), 0 0 24px rgba(124, 58, 237, .18);
+    color: #f8f5ff;
+    animation: birthdate-pop .16s ease-out;
+}
+
+.birthdate-calendar[hidden] { display: none; }
+
+.birthdate-calendar-toolbar {
+    display: grid;
+    grid-template-columns: 34px minmax(82px, 1fr) minmax(75px, .8fr) 34px;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 13px;
+}
+
+.birthdate-calendar-nav {
+    width: 34px;
+    height: 34px;
+    border: 1px solid rgba(167, 139, 250, .28);
+    border-radius: 9px;
+    background: rgba(124, 58, 237, .17);
+    color: white;
+    font-size: 19px;
+    cursor: pointer;
+}
+
+.birthdate-calendar-nav:hover { background: rgba(124, 58, 237, .38); }
+
+.birthdate-calendar-select {
+    min-width: 0;
+    width: 100%;
+    height: 34px;
+    padding: 0 7px;
+    border: 1px solid rgba(167, 139, 250, .32);
+    border-radius: 8px;
+    background: #170b29;
+    color: #fff;
+    font: 600 12px 'Inter', sans-serif;
+}
+
+.birthdate-weekdays,
+.birthdate-days {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 4px;
+    text-align: center;
+}
+
+.birthdate-weekdays { margin-bottom: 5px; }
+
+.birthdate-weekday {
+    padding: 5px 0;
+    color: #b8a9d4;
+    font: 700 11px 'Inter', sans-serif;
+}
+
+.birthdate-day,
+.birthdate-day-blank {
+    min-width: 0;
+    height: 34px;
+}
+
+.birthdate-day {
+    border: 1px solid transparent;
+    border-radius: 9px;
+    background: transparent;
+    color: #f5f0ff;
+    font: 600 12px 'Inter', sans-serif;
+    cursor: pointer;
+}
+
+.birthdate-day:hover:not(:disabled) {
+    border-color: #a78bfa;
+    background: rgba(124, 58, 237, .28);
+}
+
+.birthdate-day.is-selected {
+    background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+    color: white;
+    box-shadow: 0 3px 10px rgba(124, 58, 237, .35);
+}
+
+.birthdate-day.is-today:not(.is-selected) { border-color: rgba(196, 181, 253, .7); }
+.birthdate-day:disabled { color: #645b70; cursor: not-allowed; }
+
+.birthdate-calendar-hint {
+    margin: 10px 2px 0;
+    color: #a89ab9;
+    font: 11px 'Inter', sans-serif;
+    text-align: center;
+}
+
+@keyframes birthdate-pop {
+    from { opacity: 0; transform: translateY(-5px) scale(.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@media (max-width: 480px) {
+    .birthdate-calendar { padding: 11px; }
+    .birthdate-day, .birthdate-day-blank { height: 32px; }
+}

@@ -1,0 +1,1831 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>BIRRIAS - Canal de Brawl Stars</title>
+
+    <!-- Fuentes Lilita One e Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Lilita+One&display=swap"
+          rel="stylesheet">
+
+    <!-- CSS PRINCIPAL DE TU WEB -->
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}?v=5.9">
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/home-redesign.css') }}?v=2">
+
+    <!-- CSS DE LA RACHA -->
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/racha.css') }}?v=1">
+        <link rel="stylesheet"
+              href="{{ url_for('static', filename='css/birthdate-picker.css') }}?v=1">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/flag-picker.css') }}?v=1">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/redeem-codes.css') }}?v=6">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/brawl-explorer.css') }}?v=1">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/brawl-account.css') }}?v=1">
+    <style>
+
+        /* ================= ESTILOS GENERALES (EXISTENTES) ================= */
+        .reward-card {
+            background: linear-gradient(135deg, #1b0a38 0%, #29124f 100%);
+            border: 2px solid #5b21b6;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            gap: 20px;
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+        .reward-card:hover {
+            border-color: #8b5cf6;
+            transform: translateY(-2px);
+        }
+        .reward-img-container {
+            width: 130px;
+            height: 90px;
+            background: #110524;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            border: 1px solid #4c1d95;
+            flex-shrink: 0;
+            overflow: hidden;
+            font-size: 36px;
+        }
+        .reward-img-container img {
+            width: 85%;
+            height: auto;
+            object-fit: contain;
+        }
+        .reward-img-container img.reward-icon-small {
+            width: 55%;
+            max-height: 55%;
+        }
+        .reward-badge-destacado {
+            position: absolute;
+            top: 6px;
+            left: 6px;
+            background: #8b5cf6;
+            color: white;
+            font-size: 9px;
+            font-weight: 800;
+            padding: 2px 6px;
+            border-radius: 4px;
+            letter-spacing: 0.5px;
+            z-index: 2;
+        }
+        .reward-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .reward-title {
+            color: #ffffff;
+            font-family: 'Lilita One', cursive, sans-serif;
+            font-size: 22px;
+            margin: 0;
+            letter-spacing: 0.5px;
+        }
+        .reward-desc {
+            color: #cbd5e1;
+            font-size: 14px;
+            margin: 0;
+        }
+        .reward-status {
+            color: #ef4444;
+            font-size: 12px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin-top: 4px;
+        }
+        .reward-btn-price {
+            background: linear-gradient(180deg, #f59e0b 0%, #d97706 100%);
+            border: 2px solid #fbbf24;
+            border-radius: 12px;
+            color: #111827;
+            font-family: 'Lilita One', cursive, sans-serif;
+            font-size: 18px;
+            padding: 10px 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 10px rgba(245, 158, 11, 0.3);
+            transition: filter 0.2s, transform 0.1s;
+            flex-shrink: 0;
+        }
+        .reward-btn-price img {
+            width: 22px;
+            height: 22px;
+            object-fit: contain;
+        }
+        .reward-btn-price:hover {
+            filter: brightness(1.1);
+            transform: scale(1.03);
+        }
+        .reward-btn-price:active {
+            transform: scale(0.97);
+        }
+
+        .premios-tabs-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        .premios-tab {
+            background: #15072c;
+            border: 2px solid #4c1d95;
+            color: #a78bfa;
+            font-family: 'Lilita One', cursive, sans-serif;
+            font-size: 16px;
+            padding: 10px 24px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .premios-tab:hover {
+            border-color: #8b5cf6;
+            color: #fff;
+        }
+        .premios-tab.active {
+            background: linear-gradient(180deg, #8b5cf6 0%, #6d28d9 100%);
+            border-color: #c4b5fd;
+            color: #fff;
+            box-shadow: 0 0 15px rgba(139, 92, 246, 0.5);
+        }
+        .premios-categoria {
+            display: none;
+            flex-direction: column;
+            gap: 20px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .premios-categoria.active {
+            display: flex;
+        }
+
+        @keyframes pulse-red {
+            0% { color: #ef4444; transform: scale(1); }
+            50% { color: #ff0000; transform: scale(1.08); text-shadow: 0 0 10px rgba(239, 68, 68, 0.6); }
+            100% { color: #ef4444; transform: scale(1); }
+        }
+        .coins-anim-red {
+            animation: pulse-red 0.4s ease infinite;
+        }
+
+        /* ================= TIENDA DE ANCHO TOTAL CON TACOS EN MOVIMIENTO ================= */
+        @keyframes moverTacosTienda {
+            0% {
+                background-position: 0 0, 30px 30px;
+            }
+            100% {
+                background-position: 120px 120px, 150px 150px;
+            }
+        }
+
+        #sec-tienda {
+            /* Ocupa exactamente el 100% de la ventana sin dejar huecos en blanco laterales */
+            width: 100vw;
+            position: relative;
+            left: 50%;
+            right: 50%;
+            margin-left: -50vw;
+            margin-right: -50vw;
+            
+            min-height: 80vh;
+            background-color: #3b0764;
+            background-image: radial-gradient(#581c87 20%, transparent 21%), radial-gradient(#581c87 20%, transparent 21%);
+            background-size: 60px 60px;
+            background-position: 0 0, 30px 30px;
+            animation: moverTacosTienda 8s linear infinite;
+            padding: 50px 0;
+            box-sizing: border-box;
+        }
+
+        .brawl-shop-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 30px;
+            box-sizing: border-box;
+        }
+        .brawl-shop-row {
+            display: flex;
+            gap: 25px;
+            overflow-x: auto;
+            padding-bottom: 20px;
+            scroll-behavior: smooth;
+        }
+        .brawl-shop-row::-webkit-scrollbar {
+            height: 8px;
+        }
+        .brawl-shop-row::-webkit-scrollbar-track {
+            background: rgba(17, 5, 36, 0.6);
+            border-radius: 4px;
+        }
+        .brawl-shop-row::-webkit-scrollbar-thumb {
+            background: #7c3aed;
+            border-radius: 4px;
+        }
+
+        .brawl-shop-card {
+            min-width: 240px;
+            max-width: 240px;
+            background: linear-gradient(180deg, #581c87 0%, #3b0764 100%);
+            border: 3px solid #7c3aed;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+            position: relative;
+            flex-shrink: 0;
+            transition: transform 0.2s ease;
+        }
+        .brawl-shop-card:hover {
+            transform: translateY(-5px);
+            border-color: #a78bfa;
+        }
+        .brawl-shop-header {
+            background: #4c1d95;
+            color: #ffffff;
+            font-family: 'Lilita One', cursive, sans-serif;
+            font-size: 13px;
+            text-align: center;
+            padding: 6px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            border-bottom: 2px solid #6d28d9;
+        }
+        .brawl-shop-img-area {
+            height: 170px;
+            background: radial-gradient(circle, #6d28d9 0%, #2e1065 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 15px;
+        }
+        .brawl-shop-img-area img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+        .brawl-shop-content {
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            background: #2e1065;
+            flex-grow: 1;
+        }
+        .brawl-shop-title {
+            color: #ffffff;
+            font-family: 'Lilita One', cursive, sans-serif;
+            font-size: 16px;
+            margin: 0;
+            line-height: 1.1;
+        }
+        .brawl-shop-subtitle {
+            color: #c4b5fd;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin: 0 0 8px 0;
+        }
+        .brawl-shop-footer {
+            padding: 10px 12px;
+            background: #1e0b36;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-top: 2px solid #4c1d95;
+        }
+        .brawl-old-price {
+            color: #94a3b8;
+            font-family: 'Lilita One', cursive, sans-serif;
+            font-size: 14px;
+            text-decoration: line-through;
+        }
+        .brawl-discount-tag {
+            background: #10b981;
+            color: white;
+            font-family: 'Lilita One', cursive, sans-serif;
+            font-size: 11px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+        }
+    </style>
+</head>
+<body class="bg-inicio" id="main-body">
+
+    <!-- NAVBAR SUPERIOR -->
+    <header class="navbar">
+        <div class="nav-container">
+            <!-- LOGO -->
+            <div class="logo">
+                <span class="logo-text">BIRRIAS</span>
+            </div>
+
+            <!-- NAVEGACIÓN ÚNICA -->
+            <!-- NAVEGACIÓN ÚNICA -->
+<nav class="nav-links">
+    <button class="nav-tab active" onclick="showSection('sec-inicio', 'bg-inicio', this)">INICIO</button>
+    <button class="nav-tab" onclick="showSection('sec-jugadores', 'bg-jugadores', this)">JUGADORES</button>
+    <button class="nav-tab" onclick="showSection('sec-clubs', 'bg-clubs', this)">CLUBS</button>
+    <button class="nav-tab" onclick="showSection('sec-comparar', 'bg-comparar', this)">COMPARAR</button>
+    <button class="nav-tab" onclick="showSection('sec-mapas', 'bg-hexagons', this); cargarRotacionMapas();">MAPAS</button>
+    <button class="nav-tab" onclick="showSection('sec-canjeo', 'bg-canjeo', this)">CANJEO <span class="badge">2</span></button>
+    <button class="nav-tab" onclick="showSection('sec-minijuegos', 'bg-minijuegos', this)">MINIJUEGOS <span class="badge">4</span></button>
+    <button class="nav-tab" onclick="showSection('sec-ranking', 'bg-ranking', this)">RANKING</button>
+    <button class="nav-tab" onclick="showSection('sec-tienda', 'bg-tienda', this)">TIENDA</button>
+</nav>
+
+           <!-- ESQUINA DERECHA DEL NAVBAR -->
+<!-- ESQUINA DERECHA DEL NAVBAR -->
+<div class="user-profile-section" style="display: flex; align-items: center; gap: 15px;">
+    <div id="birriacoins-counter" class="birriacoin-badge">
+        <img src="{{ url_for('static', filename='images/birriacoin.png') }}" alt="Birriacoin" class="birriacoin-img">
+        <span id="coins-amount">0</span>
+    </div>
+<div id="auth-container" style="display: inline-flex; align-items: center; gap: 10px; margin-left: 15px;">
+    <button id="btn-nav-auth" onclick="abrirModalAcceso()" style="background: #facc15; color: #1e1b4b; padding: 10px 20px; border: none; border-radius: 10px; font-family: 'Lilita One', cursive; font-size: 14px; cursor: pointer; white-space: nowrap;">
+        Iniciar Sesión
+    </button>
+<script>
+    function abrirModalAcceso() {
+        const modal = document.getElementById('modal-acceso');
+        if (modal) {
+            modal.style.display = 'flex';
+        }
+    }
+</script>
+    <div id="perfil-usuario-header" style="display: none; align-items: center; gap: 8px;">
+        <a href="/perfil" id="enlace-perfil-usuario" style="display: flex; align-items: center; gap: 10px; background: rgba(139, 92, 246, 0.25); border: 2px solid #8b5cf6; padding: 4px 14px 4px 6px; border-radius: 50px; text-decoration: none; color: white; font-family: 'Lilita One', cursive; cursor: pointer;">
+            <div style="width: 32px; height: 32px; min-width: 32px; min-height: 32px; border-radius: 50%; overflow: hidden; border: 2px solid #ffd700; display: flex; align-items: center; justify-content: center; background: #8b5cf6; font-size: 14px; font-weight: bold; color: white;">
+                <img id="avatar-usuario" src="" alt="" style="width: 100%; height: 100%; object-fit: cover; display: none;">
+                <span id="avatar-inicial-texto" style="display: flex;">U</span>
+            </div>
+            <span id="nombre-usuario-display" style="font-size: 14px; max-width: 110px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Jugador</span>
+            <span style="font-size: 10px; opacity: 0.7;">⚙️</span>
+        </a>
+
+        <button id="btn-cerrar-sesion" onclick="logoutUser()" title="Cerrar Sesión" style="background: #ef4444; color: white; border: none; border-radius: 8px; padding: 8px 12px; font-family: 'Lilita One', cursive; font-size: 13px; cursor: pointer; white-space: nowrap;">
+            ✕
+        </button>
+    </div>
+</div>
+   <!-- MODAL DE ACCESO / CUENTA -->
+<!-- MODAL DE ACCESO / CUENTA -->
+<!-- MODAL UNIFICADO CON PESTAÑAS -->
+<div id="modal-acceso" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.85); z-index: 9999; align-items: center; justify-content: center;">    
+        <div style="background: #18092b; border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 24px; padding: 30px; width: 100%; max-width: 440px; position: relative; box-shadow: 0 20px 40px rgba(0,0,0,0.6);">
+        
+        <!-- Botón Cerrar (X) -->
+        <button onclick="cerrarModalAcceso()" style="position: absolute; top: 20px; right: 20px; background: none; border: none; color: #9ca3af; font-size: 20px; cursor: pointer;">✕</button>
+        
+        <!-- Pestañas superiores -->
+        <div style="display: flex; gap: 10px; margin-bottom: 25px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 12px;">
+            <button onclick="cambiarTab('login')" id="btn-tab-login" style="background: none; border: none; color: #ffffff; font-family: 'Lilita One', cursive; font-size: 18px; cursor: pointer; opacity: 1;">Iniciar Sesión</button>
+            <button onclick="cambiarTab('registro')" id="btn-tab-registro" style="background: none; border: none; color: #9ca3af; font-family: 'Lilita One', cursive; font-size: 18px; cursor: pointer; opacity: 0.6;">Registrarse</button>
+        </div>
+
+        <!-- FORMULARIO DE INICIO DE SESIÓN -->
+        <div id="form-login-container">
+            <h2 style="font-family: 'Lilita One', cursive; color: #ffffff; font-size: 22px; margin-bottom: 20px; text-align: center;">ACCESO A BIRRIAS</h2>
+            <form id="form-login">
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; font-size: 11px; color: #9ca3af; font-weight: bold; margin-bottom: 6px; text-transform: uppercase;">Correo Electrónico</label>
+                    <input type="email" id="login-email" placeholder="tu@email.com" required style="width: 100%; background: #0f051d; border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; padding: 12px; color: #fff; font-size: 14px; outline: none; box-sizing: border-box;">
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+    <label style="display: block; font-size: 11px; color: #9ca3af; font-weight: bold; margin-bottom: 6px; text-transform: uppercase;">Contraseña</label>
+    <div style="position: relative;">
+        <input type="password" id="login-password" placeholder="••••••••" required style="width: 100%; background: #0f051d; border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; padding: 12px 40px 12px 12px; color: #fff; font-size: 14px; outline: none; box-sizing: border-box;">
+        <button type="button" onclick="togglePassword('login-password', this)" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; font-size: 16px; padding: 0; color: #9ca3af;">
+            👁️
+        </button>
+    </div>
+</div>
+
+                <button type="button" onclick="abrirRecuperacionPassword()" style="display: block; margin: -8px 0 18px auto; padding: 0; border: 0; background: transparent; color: #c4b5fd; font-size: 12px; cursor: pointer;">¿Olvidaste tu contraseña?</button>
+                
+                <button type="button" id="btn-ejecutar-login" style="width: 100%; background: linear-gradient(135deg, #7c3aed, #4f46e5); border: none; border-radius: 14px; padding: 14px; color: #fff; font-family: 'Lilita One', cursive; font-size: 16px; cursor: pointer; box-shadow: 0 4px 12px rgba(124,58,237,0.4);">INICIAR SESIÓN</button>
+            </form>
+
+            <div id="password-reset-container" style="display: none;">
+              <div id="password-reset-email-step">
+                <p style="color: #cbd5e1; font-size: 13px; line-height: 1.5; margin: 0 0 16px; text-align: center;">Te enviaremos un código de seis cifras a tu correo. Después podrás elegir una contraseña nueva.</p>
+                <label for="reset-email" style="display: block; font-size: 11px; color: #9ca3af; font-weight: bold; margin-bottom: 6px; text-transform: uppercase;">Correo electrónico</label>
+                <input type="email" id="reset-email" autocomplete="email" placeholder="tu@email.com" style="width: 100%; background: #0f051d; border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; padding: 12px; color: #fff; font-size: 14px; outline: none; box-sizing: border-box; margin-bottom: 12px;">
+                <button type="button" id="btn-enviar-codigo-reset" onclick="solicitarCodigoPassword()" style="width: 100%; background: linear-gradient(135deg, #7c3aed, #4f46e5); border: none; border-radius: 12px; padding: 12px; color: white; font-family: 'Lilita One', cursive; font-size: 15px; cursor: pointer;">ENVIAR CÓDIGO</button>
+              </div>
+
+              <div id="password-reset-code-step" style="display: none; margin-top: 18px;">
+                <label for="reset-code" style="display: block; font-size: 11px; color: #9ca3af; font-weight: bold; margin-bottom: 6px; text-transform: uppercase;">Introduce el código de seis cifras</label>
+                <input type="text" id="reset-code" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6" placeholder="000000" style="width: 100%; background: #0f051d; border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; padding: 12px; color: #fff; font-size: 18px; letter-spacing: 6px; text-align: center; box-sizing: border-box; margin-bottom: 8px;">
+                <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 0 0 12px;">
+                  <span style="color: #9ca3af; font-size: 12px;">¿No te llegó el correo?</span>
+                  <button type="button" id="btn-reenviar-codigo-reset" onclick="reenviarCodigoPassword()" disabled style="border: 0; padding: 5px 0; background: transparent; color: #c4b5fd; font-size: 12px; font-weight: 700; cursor: pointer; opacity: 0.6;">Reenviar código (60 s)</button>
+                </div>
+                <button type="button" id="btn-confirmar-codigo-reset" onclick="verificarCodigoPassword()" style="width: 100%; background: linear-gradient(135deg, #7c3aed, #4f46e5); border: none; border-radius: 12px; padding: 12px; color: white; font-family: 'Lilita One', cursive; font-size: 15px; cursor: pointer;">CONFIRMAR CÓDIGO</button>
+              </div>
+
+              <div id="password-reset-password-step" style="display: none; margin-top: 18px;">
+                <label for="reset-new-password" style="display: block; font-size: 11px; color: #9ca3af; font-weight: bold; margin-bottom: 6px; text-transform: uppercase;">Nueva contraseña</label>
+                <div style="position: relative; margin-bottom: 12px;">
+                  <input type="password" id="reset-new-password" autocomplete="new-password" minlength="8" placeholder="Mínimo 8 caracteres" style="width: 100%; background: #0f051d; border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; padding: 12px 42px 12px 12px; color: #fff; font-size: 14px; box-sizing: border-box;">
+                  <button type="button" aria-label="Mostrar u ocultar la nueva contraseña" onclick="togglePassword('reset-new-password', this)" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; font-size: 16px; padding: 0; color: #9ca3af;">👁️</button>
+                </div>
+                <label for="reset-confirm-password" style="display: block; font-size: 11px; color: #9ca3af; font-weight: bold; margin-bottom: 6px; text-transform: uppercase;">Confirma la nueva contraseña</label>
+                <div style="position: relative; margin-bottom: 12px;">
+                  <input type="password" id="reset-confirm-password" autocomplete="new-password" minlength="8" placeholder="Repite la contraseña" style="width: 100%; background: #0f051d; border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; padding: 12px 42px 12px 12px; color: #fff; font-size: 14px; box-sizing: border-box;">
+                  <button type="button" aria-label="Mostrar u ocultar la confirmación" onclick="togglePassword('reset-confirm-password', this)" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; font-size: 16px; padding: 0; color: #9ca3af;">👁️</button>
+                </div>
+                <button type="button" id="btn-guardar-password-reset" onclick="confirmarResetPassword()" style="width: 100%; background: linear-gradient(135deg, #10b981, #059669); border: none; border-radius: 12px; padding: 12px; color: white; font-family: 'Lilita One', cursive; font-size: 15px; cursor: pointer;">GUARDAR CONTRASEÑA</button>
+              </div>
+
+                <p id="password-reset-message" role="status" style="display: none; color: #cbd5e1; font-size: 12px; line-height: 1.5; margin: 12px 0 0; text-align: center;"></p>
+                <button type="button" onclick="volverAlLoginDesdeReset()" style="display: block; width: 100%; margin-top: 12px; padding: 8px; border: 0; background: transparent; color: #c4b5fd; font-size: 12px; cursor: pointer;">Volver al inicio de sesión</button>
+            </div>
+        </div>
+
+       <!-- FORMULARIO DE REGISTRO -->
+<div id="form-registro-container" style="display: none;">
+    <h2 style="font-family: 'Lilita One', cursive; color: #ffffff; font-size: 22px; margin-bottom: 15px; text-align: center;">CREAR NUEVA CUENTA</h2>
+    <form id="form-registro">
+        <div style="display: flex; gap: 10px; margin-bottom: 12px;">
+            <div style="flex: 1;">
+                <label style="display: block; font-size: 10px; color: #9ca3af; font-weight: bold; margin-bottom: 4px; text-transform: uppercase;">Nombre de Usuario</label>
+                <input type="text" id="reg-usuario" placeholder="TuTag" required style="width: 100%; background: #0f051d; border: 1px solid rgba(255,255,255,0.15); border-radius: 10px; padding: 10px; color: #fff; font-size: 13px; outline: none; box-sizing: border-box;">
+            </div>
+            <div style="flex: 1;">
+    <label style="display: block; font-size: 10px; color: #9ca3af; font-weight: bold; margin-bottom: 4px; text-transform: uppercase;">Nacionalidad</label>
+    <select id="reg-nacionalidad" name="nacionalidad" data-flag-picker required>
+        <option value="" disabled selected>Selecciona tu país</option>
+        <option value="España" data-flag="es.png">España</option>
+        <option value="México" data-flag="mx.png">México</option>
+        <option value="Argentina" data-flag="ar.png">Argentina</option>
+        <option value="Colombia" data-flag="co.png">Colombia</option>
+        <option value="Chile" data-flag="cl.png">Chile</option>
+        <option value="Perú" data-flag="pe.png">Perú</option>
+        <option value="Venezuela" data-flag="ve.png">Venezuela</option>
+        <option value="Estados Unidos" data-flag="us.png">Estados Unidos</option>
+        <option value="Brasil" data-flag="br.png">Brasil</option>
+        <option value="Alemania" data-flag="de.png">Alemania</option>
+        <option value="Andorra" data-flag="ad.png">Andorra</option>
+        <option value="Canadá" data-flag="ca.png">Canadá</option>
+        <option value="Francia" data-flag="fr.png">Francia</option>
+        <option value="Italia" data-flag="it.png">Italia</option>
+        <option value="Reino Unido" data-flag="gb.png">Reino Unido</option>
+        <option value="Japón" data-flag="jp.png">Japón</option>
+        <option value="Otro" data-flag="other.png">Otro</option>
+    </select>
+</div>
+        </div>
+
+        <div style="margin-bottom: 12px;">
+            <label style="display: block; font-size: 10px; color: #9ca3af; font-weight: bold; margin-bottom: 4px; text-transform: uppercase;">Correo Electrónico</label>
+            <input type="email" id="reg-email" placeholder="correo@ejemplo.com" required style="width: 100%; background: #0f051d; border: 1px solid rgba(255,255,255,0.15); border-radius: 10px; padding: 10px; color: #fff; font-size: 13px; outline: none; box-sizing: border-box;">
+        </div>
+
+        <div style="margin-bottom: 12px;">
+            <label style="display: block; font-size: 10px; color: #9ca3af; font-weight: bold; margin-bottom: 4px; text-transform: uppercase;">Fecha de Nacimiento</label>
+            <input type="date" id="reg-nacimiento" lang="es" required style="width: 100%; background: #0f051d; border: 1px solid rgba(255,255,255,0.15); border-radius: 10px; padding: 10px; color: #fff; font-size: 13px; outline: none; color-scheme: dark; box-sizing: border-box;">
+        </div>
+
+        <div style="display: flex; gap: 10px; margin-bottom: 18px;">
+            <!-- Campo Contraseña -->
+            <div style="flex: 1;">
+                <label style="display: block; font-size: 10px; color: #9ca3af; font-weight: bold; margin-bottom: 4px; text-transform: uppercase;">Contraseña</label>
+                <div style="position: relative;">
+                    <input type="password" id="reg-pass" minlength="8" placeholder="Mínimo 8 caracteres" required style="width: 100%; background: #0f051d; border: 1px solid rgba(255,255,255,0.15); border-radius: 10px; padding: 10px 36px 10px 10px; color: #fff; font-size: 13px; outline: none; box-sizing: border-box;">
+                    <button type="button" onclick="togglePassword('reg-pass', this)" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; font-size: 14px; padding: 0; color: #9ca3af;">
+                        👁️
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Campo Repetir Contraseña -->
+            <div style="flex: 1;">
+                <label style="display: block; font-size: 10px; color: #9ca3af; font-weight: bold; margin-bottom: 4px; text-transform: uppercase;">Repetir Contraseña</label>
+                <div style="position: relative;">
+                    <input type="password" id="reg-pass-confirm" minlength="8" placeholder="Mínimo 8 caracteres" required style="width: 100%; background: #0f051d; border: 1px solid rgba(255,255,255,0.15); border-radius: 10px; padding: 10px 36px 10px 10px; color: #fff; font-size: 13px; outline: none; box-sizing: border-box;">
+                    <button type="button" onclick="togglePassword('reg-pass-confirm', this)" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; font-size: 14px; padding: 0; color: #9ca3af;">
+                        👁️
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <button type="button" id="btn-ejecutar-registro" onclick="ejecutarRegistroUnico()" style="width: 100%; background: linear-gradient(135deg, #10b981, #059669); border: none; border-radius: 14px; padding: 14px; color: #fff; font-family: 'Lilita One', cursive; font-size: 16px; cursor: pointer; box-shadow: 0 4px 12px rgba(16,185,129,0.4);">REGISTRARSE</button>
+    </form>
+</div>
+
+    </div>
+
+</header> <!-- <-- AQUÍ CIERRA EL HEADER -->
+
+<!-- PEGA LA SECCIÓN AQUÍ ABAJO, FUERA DEL HEADER -->
+<div id="sec-ranking" class="content-section" style="display: none; padding: 40px; color: white;">
+    <div style="background: rgba(30, 27, 46, 0.9); border-radius: 16px; padding: 20px; border: 2px solid #5a3e84; overflow-x: auto;">
+        <table style="width: 100%; border-collapse: collapse; text-align: left;">
+            <thead>
+                <tr style="border-bottom: 2px solid #5a3e84; color: #a29bfe; font-size: 14px;">
+                    <th style="padding: 12px;">#</th>
+                    <th style="padding: 12px;">JUGADOR</th>
+                    <th style="padding: 12px;">NACIONALIDAD</th>
+                    <th style="padding: 12px; text-align: right;">BIRRIACOINS</th>
+                </tr>
+            </thead>
+            <tbody id="tabla-ranking-cuerpo">
+                </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Aquí empiezan las demás secciones o el contenedor principal -->
+
+    <main class="main-content" id="main-container">
+
+  
+<!-- ================= SECCIÓN INICIO ================= -->
+<section id="sec-inicio" class="content-section active home-section">
+    <div class="home-layout">
+        <div class="home-hero">
+            <div class="home-brand-lockup">
+                <img src="{{ url_for('static', filename='images/birriasprofile.jpg') }}" alt="" class="home-brand-avatar">
+                <span class="home-brand-copy"><strong>BIRRIAS</strong><small>BRAWL STARS · EN COMUNIDAD</small></span>
+                <span class="home-brand-status"><span aria-hidden="true"></span> CANAL ACTIVO</span>
+            </div>
+            <span class="home-eyebrow"><span class="home-eyebrow-dot" aria-hidden="true"></span> CANAL DE BRAWL STARS</span>
+            <h1 class="home-title">¡Bienvenido<br>a <span>Birrias!</span></h1>
+            <p class="home-description">Un punto de encuentro para disfrutar <strong>Brawl Stars</strong>: novedades, partidas y contenido para toda la comunidad.</p>
+            <a class="home-youtube-link" href="https://www.youtube.com/@BirriasBrawlStars" target="_blank" rel="noopener noreferrer">
+                <span class="home-youtube-play" aria-hidden="true">▶</span>
+                <span>Visitar canal <strong>@BirriasBrawlStars</strong></span>
+                <span class="home-link-arrow" aria-hidden="true">↗</span>
+            </a>
+            <p class="home-signoff">Noticias, partidas y buen rollo. ¡Nos vemos en la arena!</p>
+            <div class="home-topics" aria-label="Contenido del canal">
+                <span>📰 Noticias</span><span>⚔️ Partidas</span><span>💜 Comunidad</span>
+            </div>
+        </div>
+
+        <aside class="home-shorts-card">
+            <div class="home-shorts-heading">
+                <div><span class="home-shorts-kicker">EN YOUTUBE</span><h2>Shorts del canal</h2></div>
+                <span class="home-shorts-live"><span aria-hidden="true"></span> VER AHORA</span>
+            </div>
+            <a class="home-short-link" href="https://www.youtube.com/@BirriasBrawlStars/shorts" target="_blank" rel="noopener noreferrer" aria-label="Ver los Shorts de Birrias en YouTube">
+                <div class="home-short-cover" aria-hidden="true">
+                    <span class="home-cover-label">YOUTUBE<br>SHORTS</span>
+                    <span class="home-cover-star home-cover-star-one">✦</span>
+                    <span class="home-cover-star home-cover-star-two">✧</span>
+                    <span class="home-cover-brawl-mark"><img src="{{ url_for('static', filename='images/spike.png') }}" alt=""></span>
+                    <img class="home-cover-brawler" src="{{ url_for('static', filename='images/shelly.png') }}" alt="">
+                    <span class="home-cover-play">▶</span>
+                    <span class="home-cover-caption">NOTICIAS<br><strong>BRAWL STARS</strong></span>
+                </div>
+                <div class="home-short-copy">
+                    <span class="home-short-category">BIRRIAS · BRAWL STARS</span>
+                    <h3>Noticias, novedades y más</h3>
+                    <p>Actualizaciones, eventos y curiosidades de Brawl Stars en vídeos breves.</p>
+                    <span class="home-short-cta">VER LOS SHORTS <span aria-hidden="true">→</span></span>
+                </div>
+            </a>
+            <div class="home-short-footer"><span aria-hidden="true">📱</span> Brawl Stars en formato breve y directo</div>
+        </aside>
+    </div>
+
+    <div class="home-channel-highlights" aria-label="Contenido del canal Birrias">
+        <article class="home-highlight">
+            <span class="home-highlight-icon home-highlight-news"><img src="{{ url_for('static', filename='images/noticias.png') }}" alt=""></span>
+            <span class="home-highlight-copy"><strong>NOVEDADES</strong><small>Noticias y eventos de Brawl Stars</small></span>
+        </article>
+        <article class="home-highlight">
+            <span class="home-highlight-icon"><img src="{{ url_for('static', filename='images/shelly.png') }}" alt=""></span>
+            <span class="home-highlight-copy"><strong>PARTIDAS</strong><small>Un juego para compartir en comunidad</small></span>
+        </article>
+        <article class="home-highlight">
+            <span class="home-highlight-icon"><img src="{{ url_for('static', filename='images/spike.png') }}" alt=""></span>
+            <span class="home-highlight-copy"><strong>EL CANAL</strong><small>Sigue a @BirriasBrawlStars en YouTube</small></span>
+        </article>
+    </div>
+</section>
+
+<!-- ================= SECCIÓN 1: MINIJUEGOS ================= -->
+<section id="sec-minijuegos" class="content-section" style="padding: 40px; color: white;">
+    <div style="text-align: center; margin-bottom: 30px;">
+        <div style="display: inline-flex; align-items: center; gap: 6px; background: rgba(168, 85, 247, 0.15); border: 1px solid rgba(168, 85, 247, 0.3); padding: 6px 16px; border-radius: 20px; margin-bottom: 10px;">
+            <span style="font-family: 'Lilita One', cursive; font-size: 15px; color: #e879f9; letter-spacing: 1px; text-transform: uppercase;">▶ TIROS GRATIS 🗲</span>
+        </div>
+        <h1 style="font-family: 'Lilita One', cursive; font-size: 42px; margin-bottom: 8px; text-transform: uppercase; text-shadow: 0 4px 15px rgba(255, 140, 0, 0.3); background: linear-gradient(90deg, #ff8c00, #ff007f, #94a3b8); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Ruleta de Premios</h1>
+        <p style="color: #a29bb8; font-size: 17px; font-weight: 500;">¡Gira la ruleta y gana increíbles recompensas!</p>
+    </div>
+    
+    <div class="roulette-card" style="background: linear-gradient(135deg, #322348 0%, #201730 100%); border-radius: 20px; padding: 40px; border: 2px solid rgba(230, 160, 50, 0.5); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4); max-width: 1100px; margin: 0 auto; display: flex; flex-wrap: wrap; gap: 40px; align-items: center; justify-content: space-between; position: relative; overflow: hidden; box-sizing: border-box;">
+    
+        <div id="badge-disponible-ruleta" style="display: none; position: absolute; top: 20px; left: 20px; background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%); padding: 8px 16px; border-radius: 8px; font-family: 'Lilita One', cursive; font-size: 15px; color: #ffffff; text-transform: uppercase; letter-spacing: 0.5px; z-index: 10; align-items: center; gap: 6px; box-shadow: 0 4px 15px rgba(255, 65, 108, 0.4);">
+            ⚡ DISPONIBLE
+        </div>
+
+        <div class="card-left" style="flex: 1.2; min-width: 320px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; background: transparent;">
+            <div class="wheel-container" style="position: relative; display: inline-block; cursor: pointer; transition: transform 0.3s ease;" onclick="abrirRuletaPantallaCompleta()" onmouseover="this.style.transform='scale(1.05)';" onmouseout="this.style.transform='scale(1)';" title="Haz clic para abrir">
+                <div class="wheel-pointer" style="position: absolute; top: -10px; left: 50%; transform: translateX(-50%); z-index: 10; color: #ffd700; font-size: 38px; text-shadow: 0 2px 6px rgba(0,0,0,0.9);">▼</div>
+                <canvas id="roulette-canvas" width="460" height="460" style="display: block; max-width: 100%; height: auto; border-radius: 50%; box-shadow: 0 0 35px rgba(255,215,0,0.3);"></canvas>
+            </div>
+        </div>
+
+        <div class="card-right" style="flex: 1.3; min-width: 300px; text-align: left; display: flex; flex-direction: column; justify-content: center; gap: 16px;">
+            <h2 class="card-title" style="font-family: 'Lilita One', cursive; font-size: 35px; color: #ffffff; margin: 0; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">¡Gira y Gana Premios!</h2>
+            
+            <p class="card-desc" style="color: #cbd5e1; font-size: 17px; line-height: 1.6; margin: 0;">
+                <strong style="color: #ffcc00;">PRUEBA SUERTE</strong> en la <strong style="color: #ff4b2b;">RULETA</strong> y <strong style="color: #38bdf8;">VUELVE</strong> para <strong style="color: #34d399;">RECLAMAR tus TIROS GRATIS</strong>.
+            </p>
+            
+            <div class="stats-row" style="display: flex; margin: 0 0 20px 0;">
+                <div class="stat-box" style="width: 100%; background: rgba(255, 215, 0, 0.08); padding: 14px 20px; border-radius: 16px; border: 2px solid rgba(255, 215, 0, 0.35); display: flex; flex-direction: row; align-items: center; justify-content: flex-start; gap: 16px; box-shadow: 0 8px 20px rgba(0,0,0,0.3); box-sizing: border-box;">
+                    <div style="background: rgba(255, 215, 0, 0.2); width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; border: 1px solid rgba(255,215,0,0.5);">
+                        <img src="/static/images/birriacoin.png" alt="Moneda" style="width: 30px; height: 30px; object-fit: contain;">
+                    </div>
+                    <div style="display: flex; flex-direction: column; text-align: left;">
+                        <span class="stat-num" style="font-family: 'Lilita One', cursive; font-size: 35px; color: #ffeb3b; text-shadow: 0 0 12px rgba(255, 235, 59, 0.5); line-height: 1.1;">500</span>
+                        <div class="stat-label" style="font-family: 'Lilita One', cursive; font-size: 15px; color: #fbbf24; letter-spacing: 1px; text-transform: uppercase; margin-top: 2px;">PREMIO MÁXIMO</div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 8px; margin: 0;">
+                <button class="btn-play" onclick="abrirRuletaPantallaCompleta()" style="width: 100%; background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%); border: none; padding: 16px; border-radius: 14px; font-family: 'Lilita One', cursive; font-size: 20px; color: #ffffff; cursor: pointer; box-shadow: 0 8px 25px rgba(255, 65, 108, 0.4); transition: all 0.2s ease; text-transform: uppercase; letter-spacing: 0.5px; text-align: center;">⚡ PARTICIPAR ⚡</button>
+                <p class="footer-info" style="text-align: center; margin: 0; font-size: 14px; color: #94a3b8; letter-spacing: 0.3px;">🎯 Giros gratis cada 3 horas • 100% gratis</p>
+            </div>
+        </div>
+    </div>
+<div style="background-color: #120a1f; min-height: 100vh; position: relative; margin: 0; padding: 20px; box-sizing: border-box;">
+
+
+ <!-- AQUÍ CIERRAS EL DIV AL FINAL DE TODO -->
+    <div style="text-align: center; margin-top: 50px;">
+        <div style="display: inline-flex; align-items: center; gap: 6px; background: rgba(59, 43, 94, 0.6); border: 1px solid rgba(110, 75, 160, 0.4); padding: 6px 16px; border-radius: 20px; color: #ffd700; font-family: 'Lilita One', cursive; font-size: 15px; margin-bottom: 15px; letter-spacing: 1px;">
+            ⚡ JUEGO DESTACADO ⚡
+        </div>
+        <h2 style="font-family: 'Lilita One', cursive; font-size: 38px; color: #ffffff; margin: 0 0 8px 0; text-shadow: 0 3px 10px rgba(0,0,0,0.5);">Lanzamiento de Moneda</h2>
+        <p style="color: #a29bb8; font-size: 17px; margin: 0 0 30px 0; font-weight: 500;">¡Lanza tu Birriacoin y gana recompensas legendarias!</p>
+
+        <div style="max-width: 980px; margin: 0 auto; background: linear-gradient(135deg, #322348 0%, #201730 100%); border: 2px solid rgba(110, 75, 160, 0.4); border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.4); display: flex; flex-wrap: wrap; overflow: hidden; text-align: left;">
+            
+            <div style="flex: 1; min-width: 320px; padding: 40px; background: rgba(0, 0, 0, 0.15); border-right: 1px solid rgba(255, 255, 255, 0.05); display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative;">
+                
+               <!-- Badge flotante arriba a la izquierda con su propio ID único -->
+<div id="badge-disponible-flotante" style="position: absolute; top: 20px; left: 20px; background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%); padding: 8px 16px; border-radius: 8px; font-family: 'Lilita One', cursive; font-size: 15px; color: #ffffff; text-transform: uppercase; letter-spacing: 0.5px; z-index: 10; align-items: center; gap: 6px; box-shadow: 0 4px 15px rgba(255, 65, 108, 0.4);">
+    ⚡ DISPONIBLE
+</div>
+
+<div onclick="abrirMonedaPantallaCompleta()" title="Haz clic para abrir" style="width: 145px; height: 145px; margin: 20px 0 30px 0; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #fff59d 0%, #fbc02d 45%, #f57f17 80%, #e65100 100%); border: 5px solid #fffde7; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: inset 0 3px 8px rgba(255,255,255,0.8), inset 0 -4px 10px rgba(0,0,0,0.4), 0 0 30px rgba(255, 215, 0, 0.6); overflow: hidden; cursor: pointer; transition: transform 0.3s ease, box-shadow 0.3s ease;" onmouseover="this.style.transform='scale(1.08)'; this.style.boxShadow='inset 0 3px 8px rgba(255,255,255,0.9), inset 0 -4px 10px rgba(0,0,0,0.4), 0 0 40px rgba(255, 215, 0, 0.9)';" onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='inset 0 3px 8px rgba(255,255,255,0.8), inset 0 -4px 10px rgba(0,0,0,0.4), 0 0 30px rgba(255, 215, 0, 0.6)';">
+    <img src="{{ url_for('static', filename='images/birriacoin.png') }}" alt="Coin" style="width: 42px; height: 42px; margin-bottom: 2px; object-fit: contain; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.4));">
+    <span style="color: #3e1b00; font-family: 'Lilita One', cursive; font-size: 20px; text-shadow: 0 1px 0 rgba(255,255,255,0.5); letter-spacing: 0.5px;">CARA</span>
+</div>
+
+<p style="color: #ffffff; font-family: 'Lilita One', cursive; font-size: 17px; margin: 0; text-align: center; text-shadow: 0 2px 4px rgba(0,0,0,0.4);">¡Elige Cara o Cruz para tirar!</p>
+</div>
+
+<div id="seccion-juego-derecha" style="flex: 1.2; min-width: 320px; padding: 40px; display: flex; flex-direction: column; justify-content: center;">
+<!-- (Aquí ya NO va el segundo badge duplicado) -->
+
+    <h3 style="color: #fff; font-family: 'Lilita One', cursive; font-size: 32px; margin: 0 0 12px 0; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">¡Lanza y Gana!</h3>
+    <p style="color: #d4d0e8; font-size: 16px; margin: 0 0 20px 0; line-height: 1.5;">
+        <strong style="color: #38bdf8;">GIRA</strong> la <strong style="color: #fbbf24;">MONEDA</strong>, ELIGE <strong style="color: #ec4899;">CARA</strong> o <strong style="color: #ec4899;">CRUZ</strong> y <strong style="color: #4ade80;">PRUEBA</strong> tu <strong style="color: #c084fc;">SUERTE</strong>.
+    </p>
+
+    <div class="stats-row" style="display: flex; margin: 0 0 20px 0;">
+        <div class="stat-box" style="width: 100%; background: rgba(255, 215, 0, 0.08); padding: 14px 20px; border-radius: 16px; border: 2px solid rgba(255, 215, 0, 0.35); display: flex; flex-direction: row; align-items: center; justify-content: flex-start; gap: 16px; box-shadow: 0 8px 20px rgba(0,0,0,0.3); box-sizing: border-box;">
+            <div style="background: rgba(255, 215, 0, 0.2); width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; border: 1px solid rgba(255,215,0,0.5);">
+                <img src="/static/images/birriacoin.png" alt="Moneda" style="width: 30px; height: 30px; object-fit: contain;">
+            </div>
+            <div style="display: flex; flex-direction: column; text-align: left;">
+                <span class="stat-num" style="font-family: 'Lilita One', cursive; font-size: 35px; color: #ffeb3b; text-shadow: 0 0 12px rgba(255, 235, 59, 0.5); line-height: 1.1;">500</span>
+                <div class="stat-label" style="font-family: 'Lilita One', cursive; font-size: 15px; color: #fbbf24; letter-spacing: 1px; text-transform: uppercase; margin-top: 2px;">PREMIO MÁXIMO</div>
+            </div>
+        </div>
+    </div>
+
+    <button onclick="abrirMonedaPantallaCompleta()" style="display: block; width: 240px; margin: 0 auto 15px auto; background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%); border: none; border-radius: 14px; padding: 14px; color: white; font-family: 'Lilita One', cursive; font-size: 18px; cursor: pointer; box-shadow: 0 4px 15px rgba(255,65,108,0.3); transition: all 0.1s; text-align: center;">
+        ⚡ GIRAR ⚡
+    </button>
+
+    <div id="contenedor-timer-moneda-card" style="display: none; margin-bottom: 15px; background: linear-gradient(135deg, #ff7b00, #ff416c); padding: 10px 20px; border-radius: 12px; box-shadow: 0 6px 20px rgba(0,0,0,0.5); text-align: center;">
+        <span style="display: block; color: #fff; font-family: 'Lilita One', sans-serif; font-size: 13px; letter-spacing: 1px; margin-bottom: 2px;">TIEMPO DE ESPERA</span>
+        <div style="display: flex; gap: 6px; justify-content: center; color: #fff; font-family: 'Lilita One', sans-serif; font-size: 18px;">
+            <span id="timer-horas-moneda-card">03</span>:<span id="timer-min-moneda-card">00</span>:<span id="timer-seg-moneda-card">00</span>
+        </div>
+    </div>
+
+    <div style="text-align: center; color: #a29bb8; font-size: 14px; font-weight: 500;">
+        🔄 Probabilidad dinámica integrada
+    </div>
+</div>
+        </div>
+    </div>
+</section>
+<div id="modal-pantalla-completa-moneda" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 5, 20, 0.95); z-index: 9999; flex-direction: column; align-items: center; justify-content: flex-start; overflow-y: auto; padding: 40px 20px;">
+    
+    <!-- Botón para cerrar -->
+    <button onclick="cerrarMonedaPantallaCompleta()" style="position: fixed; top: 20px; right: 20px; background: #2d1f4d; border: none; color: white; border-radius: 50%; width: 40px; height: 40px; font-size: 18px; cursor: pointer; z-index: 100;">✕</button>
+
+    <!-- Tarjeta Principal del Modal -->
+    <div style="background: linear-gradient(135deg, #2b1b3d 0%, #181026 100%); border-radius: 24px; padding: 40px 30px; border: 2px solid rgba(230, 150, 50, 0.4); box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5); max-width: 980px; width: 100%; display: flex; flex-direction: column; align-items: center;">
+        
+        <!-- Moneda grande -->
+        <div style="perspective: 1000px; width: 220px; height: 220px; margin: 10px auto 20px auto; display: flex; align-items: center; justify-content: center;">
+            <div id="birria-coin-fs" style="width: 220px; height: 220px; position: relative; transform-style: preserve-3d; transition: transform 1.6s cubic-bezier(0.15, 0.85, 0.15, 1); border-radius: 50%;">
+                
+                <!-- Cara -->
+                <div style="width: 100%; height: 100%; border-radius: 50%; position: absolute; top: 0; left: 0; backface-visibility: hidden; background: radial-gradient(circle, #ffe600 0%, #cc9900 100%); display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                    <img src="{{ url_for('static', filename='images/birriacoin.png') }}" alt="Coin" style="width: 80px; height: 80px; margin-bottom: 4px; object-fit: contain;">
+                    <span style="color: #4A1500; font-family: 'Lilita One', cursive; font-size: 35px;">CARA</span>
+                </div>
+                
+                <!-- Cruz -->
+                <div style="width: 100%; height: 100%; border-radius: 50%; position: absolute; top: 0; left: 0; backface-visibility: hidden; transform: rotateY(180deg); background: radial-gradient(circle, #ff4466 0%, #990022 100%); display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                    <img src="{{ url_for('static', filename='images/birriacoin.png') }}" alt="Coin" style="width: 80px; height: 80px; margin-bottom: 4px; object-fit: contain;">
+                    <span style="color: #ffffff; font-family: 'Lilita One', cursive; font-size: 35px;">CRUZ</span>
+                </div>
+
+            </div>
+        </div>
+
+<div id="contenedor-acciones-moneda" style="display: flex; flex-direction: column; align-items: center; width: 100%;">
+    
+    <div id="coin-result-text-fs" style="color: #fff; font-size: 18px; font-family: 'Lilita One', cursive; margin: 15px 0; text-align: center; min-height: 30px;">
+        ¡Elige Cara o Cruz para tirar!
+    </div>
+
+    <!-- Contenedor exclusivo de botones (se oculta automáticamente al agotarse los intentos) -->
+    <div id="jugar-botones-container-fs" style="display: flex; gap: 15px; justify-content: center; margin: 15px 0; flex-wrap: wrap;">
+        <button onclick="lanzarMonedaFS('cara')" style="background: linear-gradient(135deg, #ffd700 0%, #ff8c00 100%); border: none; border-radius: 14px; padding: 14px 28px; color: #3b1c58; font-family: 'Lilita One', cursive; font-size: 18px; cursor: pointer; box-shadow: 0 4px 15px rgba(255,215,0,0.3);">JUGAR CARA</button>
+        <button onclick="lanzarMonedaFS('cruz')" style="background: linear-gradient(135deg, #ff4466 0%, #cc0022 100%); border: none; border-radius: 14px; padding: 14px 28px; color: #ffffff; font-family: 'Lilita One', cursive; font-size: 18px; cursor: pointer; box-shadow: 0 4px 15px rgba(255,68,102,0.3);">JUGAR CRUZ</button>
+    </div>
+<div id="container-agotado-fs" style="display: none; width: 100%; flex-direction: column; align-items: center; gap: 12px; margin: 10px 0;">
+    
+    <!-- Botón HTML real inhabilitado, con el mismo cursor y sin permitir selección -->
+    <button type="button" disabled style="background: #3b374c; color: #a29bb8; font-family: 'Lilita One', cursive; font-size: 16px; padding: 12px 35px; border-radius: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; gap: 8px; letter-spacing: 1px; border: 1px solid rgba(255,255,255,0.05); cursor: not-allowed; opacity: 1; user-select: none;">
+        <span>🔒</span> ¡AGOTADO!
+    </button>
+
+    <div id="contenedor-timer-moneda-card-fs" style="background: linear-gradient(135deg, #ff7b00, #ff416c); padding: 12px 25px; border-radius: 14px; box-shadow: 0 6px 20px rgba(0,0,0,0.5); text-align: center; width: fit-content; min-width: 200px;">
+        <span style="display: block; color: #fff; font-family: 'Lilita One', sans-serif; font-size: 11px; letter-spacing: 1px; margin-bottom: 3px; text-transform: uppercase;">TIEMPO DE ESPERA</span>
+        <div style="display: flex; gap: 6px; justify-content: center; color: #fff; font-family: 'Lilita One', sans-serif; font-size: 18px;">
+            <span id="timer-horas">00</span>:<span id="timer-min">00</span>:<span id="timer-seg">00</span>
+        </div>
+    </div>
+
+</div>
+
+<!-- PREMIO MÁXIMO POSIBLE -->
+<div id="container-premio-maximo-fs" style="display: none; background: rgba(0,0,0,0.25); border: 1px solid rgba(255,215,0,0.2); border-radius: 14px; padding: 12px 24px; text-align: center; margin-top: 25px; width: fit-content;">
+    <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 2px;">
+        <img src="/static/images/birriacoin.png" alt="🪙" style="width: 25px; vertical-align: middle;">
+        <span id="potential-prize-fs" style="color: #ffd700; font-family: 'Lilita One', cursive; font-size: 26px;">50</span>
+    </div>
+    <span style="color: #a29bb8; font-size: 11px; font-weight: bold; letter-spacing: 1px; text-transform: uppercase;">PREMIO MÁXIMO POSIBLE</span>
+</div>
+
+<div id="modal-premio-moneda" style="display: none; position: fixed; top: 0px; left: 0px; width: 100%; height: 100%; background: rgba(10, 5, 20, 0.9); z-index: 10005; align-items: center; justify-content: center; padding: 20px;">
+    <div style="background: linear-gradient(135deg, #2b1b3d 0%, #181026 100%); border: 2px solid rgba(255, 215, 0, 0.4); border-radius: 24px; padding: 30px; width: 100%; max-width: 400px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.8); position: relative;">
+        
+        <button onclick="cerrarModalMoneda()" style="position: absolute; top: 15px; right: 15px; background: transparent; border: none; color: #fff; font-size: 20px; cursor: pointer;">✕</button>
+
+        <h3 id="titulo-modal-moneda" style="font-family: 'Lilita One', cursive; color: #fff; font-size: 24px; margin-bottom: 20px;">🎁 ¡PREMIO! 🎁</h3>
+       
+        <div id="icono-modal-contenedor" style="margin: 20px auto; width: 90px; height: 90px; background: radial-gradient(circle, #ffd700 0%, #ff8c00 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 25px rgba(255,215,0,0.6); border: 4px solid #fff;">
+            <img id="img-modal-moneda" src="/static/images/birriacoin.png" alt="Premio" style="width: 55px; height: 55px; object-fit: contain;">
+        </div>
+
+        <div style="background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; padding: 15px; margin-bottom: 25px;">
+            <span id="texto-premio-moneda" style="font-family: 'Lilita One', cursive; font-size: 20px; color: #fff; display: block;">500 BIRRIACOINS</span>
+        </div>
+
+        <button onclick="cerrarModalMoneda()" style="width: 100%; background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%); border: none; padding: 14px; border-radius: 14px; font-family: 'Lilita One', cursive; font-size: 16px; color: #ffffff; cursor: pointer; box-shadow: 0 6px 20px rgba(255, 65, 108, 0.4);">CONTINUAR</button>
+    </div>
+</div>
+<!-- Asegúrate de que el contenedor principal morado tenga position: relative en tu CSS -->
+<div id="badge-tickets-esquina" style="position: absolute; top: 70px; right: 650px; background: linear-gradient(135deg, #1e1b2e, #2d2640); border: 2.5px solid #ffca28; padding: 10px 18px; border-radius: 16px; box-shadow: 0 6px 20px rgba(0,0,0,0.6); display: flex; align-items: center; gap: 10px; z-index: 100;">
+    <span style="font-family: 'Lilita One', cursive; font-size: 20px; color: #ffca28;">🎫</span>
+    <span id="texto-tickets-esquina" style="font-family: 'Lilita One', cursive; font-size: 20px; color: #ffffff; letter-spacing: 0.5px;">3 / 3</span>
+</div>
+<div id="btn-estado-moneda-container">
+    </div>
+<div style="width: 100%; max-width: 980px; text-align: left; margin-top: 30px; background: transparent; box-shadow: none; border: none; padding: 0;">
+    <h3 style="font-family: 'Lilita One', cursive; color: #fff; margin-bottom: 20px; font-size: 20px; display: flex; align-items: center; gap: 8px; width: 100%;">
+        📊 INFORMACIÓN DE PREMIOS Y PROBABILIDADES
+    </h3>
+
+    <div class="contenedor-probabilidades-grid" style="width: 100%; max-width: 980px; margin: 0 auto 60px auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 16px; text-align: left; background: transparent;">
+        
+        <!-- 10 Birriacoins (34.00%) -->
+        <div class="tarjeta-probabilidad-exacta" style="background: transparent; border: 2px solid rgba(139, 92, 246, 0.3); border-radius: 20px; padding: 25px 15px; position: relative; display: flex; flex-direction: column; align-items: center; text-align: center; box-shadow: none;">
+            <div style="background: #ef4444; width: 54px; height: 54px; border-radius: 14px; display: flex; align-items: center; justify-content: center; margin: 10px 0 12px 0; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);">
+                <img src="/static/images/birriacoin.png" style="width: 32px; height: 32px; object-fit: contain;" alt="Coin">
+            </div>
+            <div style="font-family: 'Lilita One', cursive; font-size: 15px; color: #ffffff; margin-bottom: 12px; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">10 BIRRIACOINS</div>
+            <div style="font-size: 11px; color: #9ca3af; text-transform: uppercase; font-weight: bold; font-family: sans-serif; letter-spacing: 0.5px; margin-bottom: 2px;">PROBABILIDAD</div>
+            <div style="font-family: 'Lilita One', cursive; font-size: 22px; color: #ff3333 !important; text-shadow: 0 0 10px rgba(255, 51, 51, 0.4);">34.00%</div>
+        </div>
+
+        <!-- 25 Birriacoins (31.50%) -->
+        <div class="tarjeta-probabilidad-exacta" style="background: transparent; border: 2px solid rgba(139, 92, 246, 0.3); border-radius: 20px; padding: 25px 15px; position: relative; display: flex; flex-direction: column; align-items: center; text-align: center; box-shadow: none;">
+            <div style="background: #ef4444; width: 54px; height: 54px; border-radius: 14px; display: flex; align-items: center; justify-content: center; margin: 10px 0 12px 0; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);">
+                <img src="/static/images/birriacoin.png" style="width: 32px; height: 32px; object-fit: contain;" alt="Coin">
+            </div>
+            <div style="font-family: 'Lilita One', cursive; font-size: 15px; color: #ffffff; margin-bottom: 12px; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">25 BIRRIACOINS</div>
+            <div style="font-size: 11px; color: #9ca3af; text-transform: uppercase; font-weight: bold; font-family: sans-serif; letter-spacing: 0.5px; margin-bottom: 2px;">PROBABILIDAD</div>
+            <div style="font-family: 'Lilita One', cursive; font-size: 22px; color: #ff3333 !important; text-shadow: 0 0 10px rgba(255, 51, 51, 0.4);">31.50%</div>
+        </div>
+
+        <!-- 50 Birriacoins (22.00%) -->
+        <div class="tarjeta-probabilidad-exacta" style="background: transparent; border: 2px solid rgba(139, 92, 246, 0.3); border-radius: 20px; padding: 25px 15px; position: relative; display: flex; flex-direction: column; align-items: center; text-align: center; box-shadow: none;">
+            <div style="background: #ef4444; width: 54px; height: 54px; border-radius: 14px; display: flex; align-items: center; justify-content: center; margin: 10px 0 12px 0; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);">
+                <img src="/static/images/birriacoin.png" style="width: 32px; height: 32px; object-fit: contain;" alt="Coin">
+            </div>
+            <div style="font-family: 'Lilita One', cursive; font-size: 15px; color: #ffffff; margin-bottom: 12px; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">50 BIRRIACOINS</div>
+            <div style="font-size: 11px; color: #9ca3af; text-transform: uppercase; font-weight: bold; font-family: sans-serif; letter-spacing: 0.5px; margin-bottom: 2px;">PROBABILIDAD</div>
+            <div style="font-family: 'Lilita One', cursive; font-size: 22px; color: #ff3333 !important; text-shadow: 0 0 10px rgba(255, 51, 51, 0.4);">22.00%</div>
+        </div>
+
+        <!-- 100 Birriacoins (11.30%) - Raro -->
+        <div class="tarjeta-probabilidad-exacta" style="background: transparent; border: 2px solid rgba(139, 92, 246, 0.3); border-radius: 20px; padding: 25px 15px; position: relative; display: flex; flex-direction: column; align-items: center; text-align: center; box-shadow: none;">
+            <div style="position: absolute; top: 12px; right: 12px; background: rgba(251, 191, 36, 0.15); border: 1px solid rgba(251, 191, 36, 0.4); color: #fbbf24; font-family: 'Lilita One', cursive; font-size: 10px; padding: 3px 8px; border-radius: 10px; display: flex; align-items: center; gap: 3px;">⭐ Raro </div>
+            <div style="background: #ef4444; width: 54px; height: 54px; border-radius: 14px; display: flex; align-items: center; justify-content: center; margin: 10px 0 12px 0; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);">
+                <img src="/static/images/birriacoin.png" style="width: 32px; height: 32px; object-fit: contain;" alt="Coin">
+            </div>
+            <div style="font-family: 'Lilita One', cursive; font-size: 15px; color: #ffffff; margin-bottom: 12px; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">100 BIRRIACOINS</div>
+            <div style="font-size: 11px; color: #9ca3af; text-transform: uppercase; font-weight: bold; font-family: sans-serif; letter-spacing: 0.5px; margin-bottom: 2px;">PROBABILIDAD</div>
+            <div style="font-family: 'Lilita One', cursive; font-size: 22px; color: #ff3333 !important; text-shadow: 0 0 10px rgba(255, 51, 51, 0.4);">11.30%</div>
+        </div>
+
+        <!-- 500 Birriacoins (1.20%) - Raro -->
+        <div class="tarjeta-probabilidad-exacta" style="background: transparent; border: 2px solid rgba(139, 92, 246, 0.3); border-radius: 20px; padding: 25px 15px; position: relative; display: flex; flex-direction: column; align-items: center; text-align: center; box-shadow: none;">
+            <div style="position: absolute; top: 12px; right: 12px; background: rgba(251, 191, 36, 0.15); border: 1px solid rgba(251, 191, 36, 0.4); color: #fbbf24; font-family: 'Lilita One', cursive; font-size: 10px; padding: 3px 8px; border-radius: 10px; display: flex; align-items: center; gap: 3px;">⭐ Épico </div>
+            <div style="background: #ef4444; width: 54px; height: 54px; border-radius: 14px; display: flex; align-items: center; justify-content: center; margin: 10px 0 12px 0; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);">
+                <img src="/static/images/birriacoin.png" style="width: 32px; height: 32px; object-fit: contain;" alt="Coin">
+            </div>
+            <div style="font-family: 'Lilita One', cursive; font-size: 15px; color: #ffffff; margin-bottom: 12px; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">500 BIRRIACOINS</div>
+            <div style="font-size: 11px; color: #9ca3af; text-transform: uppercase; font-weight: bold; font-family: sans-serif; letter-spacing: 0.5px; margin-bottom: 2px;">PROBABILIDAD</div>
+            <div style="font-family: 'Lilita One', cursive; font-size: 22px; color: #ff3333 !important; text-shadow: 0 0 10px rgba(255, 51, 51, 0.4);">1.20%</div>
+        </div>
+
+    </div>
+</div>
+  </div>      
+
+       
+
+        <!-- Botones de juego -->
+        
+
+    </div>
+</div>
+<div id="modal-pantalla-completa-ruleta" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 5, 20, 0.95); z-index: 9999; flex-direction: column; align-items: center; justify-content: flex-start; overflow-y: auto; padding: 70px 20px 80px 20px; box-sizing: border-box;">
+    
+    <button onclick="cerrarRuletaPantallaCompleta()" style="position: fixed; top: 20px; right: 20px; background: #2d1f4d; border: none; color: white; border-radius: 50%; width: 40px; height: 40px; font-size: 18px; cursor: pointer; z-index: 100;">✕</button>
+
+    <div style="background: linear-gradient(135deg, #2b1b3d 0%, #181026 100%); border-radius: 24px; padding: 40px 30px; border: 2px solid rgba(230, 150, 50, 0.4); box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5); max-width: 980px; width: 100%; display: flex; flex-direction: column; align-items: center; margin-bottom: 50px; box-sizing: border-box;">
+
+        <div style="width: 0; height: 0; border-left: 18px solid transparent; border-right: 18px solid transparent; border-top: 30px solid #ff4b2b; margin-bottom: -10px; z-index: 10; filter: drop-shadow(0 4px 4px rgba(0,0,0,0.4));"></div>
+        
+        <canvas id="roulette-canvas-fullscreen" style="width: min(60vw, 60vh); height: min(60vw, 60vh); max-width: 380px; max-height: 380px; border-radius: 50%; box-shadow: 0 0 50px rgba(255,215,0,0.4); display: block; margin: 0 auto;"></canvas>
+
+        <div id="badge-agotado-modal" style="display: none; margin-top: 30px; background: rgba(239, 68, 68, 0.2); border: 1px solid rgba(239, 68, 68, 0.5); padding: 8px 20px; border-radius: 20px; font-family: 'Lilita One', cursive; color: #f87171; font-size: 14px; letter-spacing: 0.5px; box-shadow: 0 4px 12px rgba(239,68,68,0.2);">
+            🔒 ¡AGOTADO HASTA EL PRÓXIMO TURNO!
+        </div>
+
+        <button id="btn-spin-wheel" onclick="girarRuletaConControl()" style="width: auto !important; display: inline-block !important; margin-top: 30px; background: linear-gradient(135deg, #ff416c, #ff4b2b); border: none; padding: 12px 28px; border-radius: 12px; font-family: 'Lilita One', cursive; font-size: 16px; color: #ffffff; cursor: pointer; box-shadow: 0 4px 12px rgba(255, 65, 108, 0.4);">⚡ ¡GIRAR RULETA AHORA! ⚡</button>
+
+        <div id="contenedor-timer-ruleta" style="display: block; margin-top: 25px; background: linear-gradient(135deg, rgb(255, 123, 0), rgb(255, 65, 108)); padding: 12px 25px; border-radius: 14px; box-shadow: rgba(0, 0, 0, 0.5) 0px 6px 20px; text-align: center; width: fit-content; min-width: 200px; margin-left: auto; margin-right: auto;">
+    <span style="display: block; color: #fff; font-family: 'Lilita One', sans-serif; font-size: 11px; letter-spacing: 1px; margin-bottom: 3px; text-transform: uppercase;">TIEMPO DE ESPERA</span>
+    <div style="display: flex; gap: 6px; justify-content: center; color: #fff; font-family: 'Lilita One', sans-serif; font-size: 18px;">
+        <span id="timer-horas-ruleta">00</span>:<span id="timer-min-ruleta">47</span>:<span id="timer-seg-ruleta">03</span>
+    </div>
+</div>
+
+        <div style="width: 100%; text-align: left; margin-top: 40px; background: transparent; border: none; padding: 0;">
+            <h3 style="font-family: 'Lilita One', cursive; color: #fff; margin-bottom: 20px; font-size: 20px; display: flex; align-items: center; gap: 8px; width: 100%;">
+                📊 INFORMACIÓN DE PREMIOS Y PROBABILIDADES
+            </h3>
+
+            <div style="width: 100%; display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; text-align: left; background: transparent;">
+                
+                <div style="background: transparent; border: 2px solid rgba(139, 92, 246, 0.3); border-radius: 20px; padding: 20px 15px; display: flex; flex-direction: column; align-items: center; text-align: center;">
+                    <div style="background: #ef4444; width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);">
+                        <img src="/static/images/birriacoin.png" style="width: 28px; height: 28px; object-fit: contain;" alt="Coin">
+                    </div>
+                    <div style="font-family: 'Lilita One', cursive; font-size: 14px; color: #ffffff; margin-bottom: 10px;">10 BIRRIACOINS</div>
+                    <div style="font-size: 10px; color: #9ca3af; text-transform: uppercase; font-weight: bold; font-family: sans-serif; margin-bottom: 2px;">PROBABILIDAD</div>
+                    <div style="font-family: 'Lilita One', cursive; font-size: 20px; color: #ff3333;">36.40%</div>
+                </div>
+
+                <div style="background: transparent; border: 2px solid rgba(139, 92, 246, 0.3); border-radius: 20px; padding: 20px 15px; display: flex; flex-direction: column; align-items: center; text-align: center;">
+                    <div style="background: #ef4444; width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);">
+                        <img src="/static/images/birriacoin.png" style="width: 28px; height: 28px; object-fit: contain;" alt="Coin">
+                    </div>
+                    <div style="font-family: 'Lilita One', cursive; font-size: 14px; color: #ffffff; margin-bottom: 10px;">25 BIRRIACOINS</div>
+                    <div style="font-size: 10px; color: #9ca3af; text-transform: uppercase; font-weight: bold; font-family: sans-serif; margin-bottom: 2px;">PROBABILIDAD</div>
+                    <div style="font-family: 'Lilita One', cursive; font-size: 20px; color: #ff3333;">31.20%</div>
+                </div>
+
+                <div style="background: transparent; border: 2px solid rgba(139, 92, 246, 0.3); border-radius: 20px; padding: 20px 15px; display: flex; flex-direction: column; align-items: center; text-align: center;">
+                    <div style="background: #ef4444; width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);">
+                        <img src="/static/images/birriacoin.png" style="width: 28px; height: 28px; object-fit: contain;" alt="Coin">
+                    </div>
+                    <div style="font-family: 'Lilita One', cursive; font-size: 14px; color: #ffffff; margin-bottom: 10px;">50 BIRRIACOINS</div>
+                    <div style="font-size: 10px; color: #9ca3af; text-transform: uppercase; font-weight: bold; font-family: sans-serif; margin-bottom: 2px;">PROBABILIDAD</div>
+                    <div style="font-family: 'Lilita One', cursive; font-size: 20px; color: #ff3333;">20.80%</div>
+                </div>
+
+                <div style="background: transparent; border: 2px solid rgba(139, 92, 246, 0.3); border-radius: 20px; padding: 20px 15px; position: relative; display: flex; flex-direction: column; align-items: center; text-align: center;">
+                    <div style="position: absolute; top: 10px; right: 10px; background: rgba(251, 191, 36, 0.15); border: 1px solid rgba(251, 191, 36, 0.4); color: #fbbf24; font-family: 'Lilita One', cursive; font-size: 10px; padding: 2px 6px; border-radius: 8px;">⭐ Raro </div>
+                    <div style="background: #ef4444; width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);">
+                        <img src="/static/images/birriacoin.png" style="width: 28px; height: 28px; object-fit: contain;" alt="Coin">
+                    </div>
+                    <div style="font-family: 'Lilita One', cursive; font-size: 14px; color: #ffffff; margin-bottom: 10px;">100 BIRRIACOINS</div>
+                    <div style="font-size: 10px; color: #9ca3af; text-transform: uppercase; font-weight: bold; font-family: sans-serif; margin-bottom: 2px;">PROBABILIDAD</div>
+                    <div style="font-family: 'Lilita One', cursive; font-size: 20px; color: #ff3333;">10.40%</div>
+                </div>
+
+                <div style="background: transparent; border: 2px solid rgba(139, 92, 246, 0.3); border-radius: 20px; padding: 20px 15px; position: relative; display: flex; flex-direction: column; align-items: center; text-align: center;">
+                    <div style="position: absolute; top: 10px; right: 10px; background: rgba(251, 191, 36, 0.15); border: 1px solid rgba(251, 191, 36, 0.4); color: #fbbf24; font-family: 'Lilita One', cursive; font-size: 10px; padding: 2px 6px; border-radius: 8px;">⭐ Épico </div>
+                    <div style="background: #ef4444; width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);">
+                        <img src="/static/images/birriacoin.png" style="width: 28px; height: 28px; object-fit: contain;" alt="Coin">
+                    </div>
+                    <div style="font-family: 'Lilita One', cursive; font-size: 14px; color: #ffffff; margin-bottom: 10px;">500 BIRRIACOINS</div>
+                    <div style="font-size: 10px; color: #9ca3af; text-transform: uppercase; font-weight: bold; font-family: sans-serif; margin-bottom: 2px;">PROBABILIDAD</div>
+                    <div style="font-family: 'Lilita One', cursive; font-size: 20px; color: #ff3333;">1.20%</div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+    
+</div>
+</div>
+
+<!-- DENTRO DEL MODAL DE LA RULETA -->
+<div id="contenedor-timer-ruleta-modal" style="display: none; margin-top: 25px; background: linear-gradient(135deg, #ff7b00, #ff416c); padding: 12px 25px; border-radius: 12px; box-shadow: 0 6px 20px rgba(0,0,0,0.5); text-align: center;">
+    <span style="display: block; color: #fff; font-family: 'Lilita One', sans-serif; font-size: 12px; letter-spacing: 1px; margin-bottom: 3px;">TIEMPO DE ESPERA</span>
+    <div style="display: flex; gap: 8px; justify-content: center; color: #fff; font-family: 'Lilita One', sans-serif; font-size: 18px;">
+        <span id="timer-horas-ruleta-modal">03</span>:<span id="timer-min-ruleta-modal">00</span>:<span id="timer-seg-ruleta-modal">00</span>
+    </div>
+</div>
+        <!-- ================= SECCIÓN BRAWLIFY: JUGADORES ================= -->
+        <section id="sec-jugadores" class="content-section brawl-section brawl-section-player">
+            <header class="brawl-section-heading">
+                <span class="brawl-section-kicker"><span class="brawl-kicker-dot"></span> EXPLORADOR DE BRAWL STARS</span>
+                <h1 class="page-title brawl-gradient-title">PERFIL DE JUGADOR</h1>
+                <p class="brawl-section-subtitle">Descubre trofeos, brawlers y estadísticas de cualquier jugador.</p>
+            </header>
+            <div class="brawl-search-panel">
+                <div class="brawl-search-panel-heading"><span class="brawl-search-icon">⌕</span><div><strong>BUSCA UN JUGADOR</strong><small>Introduce su etiqueta de jugador</small></div></div>
+                <div class="brawl-search-controls">
+                    <input class="brawl-tag-input" type="text" id="tag-jugador" placeholder="Ejemplo: #2PP12345" autocomplete="off" spellcheck="false" aria-label="Etiqueta del jugador">
+                    <button class="brawl-action-button brawl-action-player" onclick="buscarJugador()"><span aria-hidden="true">🔎</span> Buscar perfil</button>
+                </div>
+                <p class="brawl-search-hint"><span aria-hidden="true">✦</span> Puedes escribir la etiqueta con o sin el símbolo #.</p>
+            </div>
+            <div id="resultado-jugador" class="brawl-result brawl-result-player" style="margin-top: 20px;"></div>
+        </section>
+
+        <!-- ================= SECCIÓN BRAWLIFY: CLUBS ================= -->
+        <section id="sec-clubs" class="content-section brawl-section brawl-section-club">
+            <header class="brawl-section-heading">
+                <span class="brawl-section-kicker"><span class="brawl-kicker-dot"></span> COMUNIDAD BRAWL</span>
+                <h1 class="page-title brawl-gradient-title">CLUBES</h1>
+                <p class="brawl-section-subtitle">Conoce el club, sus trofeos y a sus miembros.</p>
+            </header>
+            <div class="brawl-search-panel">
+                <div class="brawl-search-panel-heading"><span class="brawl-search-icon">♜</span><div><strong>ENCUENTRA UN CLUB</strong><small>Introduce su etiqueta de club</small></div></div>
+                <div class="brawl-search-controls">
+                    <input class="brawl-tag-input" type="text" id="tag-club" placeholder="Ejemplo: #892LV2" autocomplete="off" spellcheck="false" aria-label="Etiqueta del club">
+                    <button class="brawl-action-button brawl-action-club" onclick="buscarClub()"><span aria-hidden="true">🛡️</span> Buscar club</button>
+                </div>
+                <p class="brawl-search-hint"><span aria-hidden="true">✦</span> Escribe la etiqueta exacta del club.</p>
+            </div>
+            <div id="resultado-club" class="brawl-result brawl-result-club" style="margin-top: 20px;"></div>
+        </section>
+
+        <!-- ================= SECCIÓN BRAWLIFY: COMPARAR ================= -->
+        <section id="sec-comparar" class="content-section brawl-section brawl-section-compare">
+            <header class="brawl-section-heading">
+                <span class="brawl-section-kicker"><span class="brawl-kicker-dot"></span> DESAFÍO CARA A CARA</span>
+                <h1 class="page-title brawl-gradient-title">COMPARAR JUGADORES</h1>
+                <p class="brawl-section-subtitle">Dos perfiles. Sus estadísticas. ¿Quién domina la arena?</p>
+            </header>
+            <div class="brawl-search-panel brawl-compare-search">
+                <div class="brawl-compare-inputs">
+                    <label class="brawl-compare-field"><span><i>01</i> JUGADOR UNO</span><input class="brawl-tag-input" type="text" id="tag-comp-1" placeholder="Ejemplo: #2PP12345" autocomplete="off" spellcheck="false" aria-label="Etiqueta del primer jugador"></label>
+                    <div class="brawl-versus-mark" aria-hidden="true">VS</div>
+                    <label class="brawl-compare-field"><span><i>02</i> JUGADOR DOS</span><input class="brawl-tag-input" type="text" id="tag-comp-2" placeholder="Ejemplo: #892LV2" autocomplete="off" spellcheck="false" aria-label="Etiqueta del segundo jugador"></label>
+                </div>
+                <button class="brawl-action-button brawl-action-compare" onclick="compararJugadores()"><span aria-hidden="true">⚔️</span> Comparar perfiles</button>
+                <p class="brawl-search-hint"><span aria-hidden="true">✦</span> Compara copas, victorias, brawlers y mucho más.</p>
+            </div>
+            <div id="resultado-comparacion" class="brawl-result brawl-result-compare" style="margin-top: 20px;"></div>
+        </section>
+
+        <!-- ================= SECCIÓN MAPAS EN VIVO ================= -->
+        <section id="sec-mapas" class="content-section brawl-section brawl-section-maps">
+            <header class="brawl-section-heading">
+                <span class="brawl-section-kicker"><span class="brawl-kicker-dot"></span> ARENA EN ROTACIÓN</span>
+                <h1 class="page-title brawl-gradient-title">MAPAS EN VIVO</h1>
+                <p class="brawl-section-subtitle">Consulta los modos activos y cuánto falta para la siguiente rotación.</p>
+            </header>
+            <div id="contenedor-eventos" class="brawl-map-grid">
+                <p style="color: white; text-align: center; grid-column: 1/-1;">Cargando rotación de mapas...</p>
+            </div>
+        </section>
+
+        <!-- ================= SECCIÓN TIENDA DE ANCHO TOTAL (SIN ESPACIOS BLANCOS) ================= -->
+       <section id="sec-tienda" class="content-section" style="width: 100%; max-width: 100vw; box-sizing: border-box; position: relative;">
+            <div style="text-align: center; margin-bottom: 25px; position: relative; z-index: 2;">
+                <h2 style="font-family: 'Lilita One', cursive, sans-serif; font-size: 34px; color: #f59e0b; text-transform: uppercase; margin: 0; letter-spacing: 1px; text-shadow: 0 0 15px rgba(245, 158, 11, 0.4);">
+                    🛒 TIENDA DE OFERTAS
+                </h2>
+                <p class="page-subtitle" style="text-align: center; margin-top: 5px; color: #ddd;">Desliza para ver todas las recompensas especiales</p>
+            </div>
+
+            <!-- CONTENEDOR DE DESPLAZAMIENTO HORIZONTAL -->
+            <div class="brawl-shop-container" style="position: relative; z-index: 2;">
+                <div class="brawl-shop-row">
+                    
+                   <!-- Tarjeta 1: Saludo en video -->
+                    <div class="brawl-shop-card">
+                        <div class="brawl-shop-header">ESPECIAL</div>
+                        <div class="brawl-shop-img-area">
+                            <img src="{{ url_for('static', filename='images/youtube.png') }}" alt="Saludo en video" style="width: 100px; height: 100px; object-fit: contain;">
+                        </div>
+                        <div class="brawl-shop-content">
+                            <h3 class="brawl-shop-title">Saludo en video</h3>
+                            <p class="brawl-shop-subtitle">VIDEO PERSONALIZADO</p>
+                        </div>
+                        <div class="brawl-shop-footer">
+                            <span style="color: transparent; font-size: 14px;">-</span>
+                            <button class="reward-btn-price" onclick="abrirModalConfirmacion('Saludo en video', 750)" style="padding: 6px 12px; font-size: 15px;">
+    <img src="{{ url_for('static', filename='images/birriacoin.png') }}" alt="Coin"> 750
+</button>
+                        </div>
+                    </div>
+
+                    <!-- Tarjeta 2: VIP Discord -->
+                    <div class="brawl-shop-card">
+                        <div class="brawl-shop-header">EXCLUSIVO</div>
+                        <div class="brawl-shop-img-area">
+                            <img src="{{ url_for('static', filename='images/discord.png') }}" alt="Discord" style="width: 100px; height: 100px; object-fit: contain;">
+                        </div>
+                        <div class="brawl-shop-content">
+                            <h3 class="brawl-shop-title">VIP Discord</h3>
+                            <p class="brawl-shop-subtitle">ROL EN DISCORD</p>
+                        </div>
+                        <div class="brawl-shop-footer">
+                            <span style="color: transparent; font-size: 14px;">-</span>
+                           <button class="reward-btn-price" onclick="abrirModalConfirmacion('VIP Discord', 750)" style="padding: 6px 12px; font-size: 15px;">
+    <img src="{{ url_for('static', filename='images/birriacoin.png') }}" alt="Coin"> 750
+</button>
+                        </div>
+                    </div>
+
+                    <!-- Tarjeta 3: Pase de Batalla -->
+                    <div class="brawl-shop-card">
+                        <div class="brawl-shop-header">TORNEO</div>
+                        <div class="brawl-shop-img-area">
+                            <img src="{{ url_for('static', filename='images/brawlpass.png') }}" alt="Pase de Batalla" style="width: 180px; height: 140px; object-fit: contain;">
+                        </div>
+                        <div class="brawl-shop-content">
+                            <h3 class="brawl-shop-title">Pase de Batalla</h3>
+                            <p class="brawl-shop-subtitle">ACCESO DIRECTO</p>
+                        </div>
+                        <div class="brawl-shop-footer">
+                            <span style="color: transparent; font-size: 14px;">-</span>
+                            <button class="reward-btn-price" onclick="abrirModalConfirmacion('Pase de Batalla', 1500)" style="padding: 6px 12px; font-size: 15px;">
+    <img src="{{ url_for('static', filename='images/birriacoin.png') }}" alt="Coin"> 1500
+</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= SECCIÓN 2: CANJEO ================= -->
+        <section id="sec-canjeo" class="content-section">
+            <div class="redeem-backdrop" aria-hidden="true">
+                <span class="redeem-drift-coin redeem-drift-coin-one"><img src="{{ url_for('static', filename='images/birriacoin.png') }}" alt=""></span>
+                <span class="redeem-drift-coin redeem-drift-coin-two"><img src="{{ url_for('static', filename='images/birriacoin.png') }}" alt=""></span>
+                <span class="redeem-drift-coin redeem-drift-coin-three"><img src="{{ url_for('static', filename='images/birriacoin.png') }}" alt=""></span>
+            </div>
+            <div class="redeem-heading">
+                <h1 class="page-title title-large title-blue">CANJEAR CÓDIGO</h1>
+            </div>
+            <p class="page-subtitle redeem-subtitle">
+                <span class="redeem-subtitle-main">Ingresa el código que <strong>Birrias</strong> comparte en sus vídeos</span>
+                <span class="redeem-subtitle-accent">¡Desbloquea BirriaCoins y consigue recompensas!</span>
+            </p>
+            <div class="redeem-card card-blue-glow redeem-panel" id="redeem-panel">
+                <div class="redeem-orbit" aria-hidden="true"><img src="{{ url_for('static', filename='images/birriacoin.png') }}" alt=""></div>
+                <div class="redeem-label label-cyan"><span class="redeem-label-pulse" aria-hidden="true"></span> INTRODUCE TU CÓDIGO <span class="redeem-label-pulse" aria-hidden="true"></span></div>
+                <input type="text" class="redeem-input input-blue" placeholder="BIRRIASSTART" id="code-input" maxlength="24" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Código de BirriaCoins">
+                <button type="button" class="btn-redeem btn-blue redeem-submit" id="btn-redeem-code" onclick="redeemCode()"><span class="redeem-button-icon" aria-hidden="true">🎁</span> CANJEAR CÓDIGO</button>
+                <p class="redeem-feedback" id="redeem-feedback" role="status" aria-live="polite"></p>
+                <div class="redeem-secure-note"><span aria-hidden="true">✓</span> El saldo se guarda en tu cuenta. Cada código se canjea una vez.</div>
+            </div>
+            <div class="redeem-benefits" aria-label="Ventajas del canje">
+                <div class="redeem-benefit"><span class="redeem-benefit-number">01</span><span><strong>Premios épicos</strong><small>BirriaCoins para tu cuenta</small></span></div>
+                <div class="redeem-benefit"><span class="redeem-benefit-number">02</span><span><strong>Códigos exclusivos</strong><small>Recompensas especiales</small></span></div>
+                <div class="redeem-benefit"><span class="redeem-benefit-number">03</span><span><strong>Canje rápido</strong><small>Escribe y recibe tu premio</small></span></div>
+            </div>
+            <div class="redeem-social-banner">
+                <div class="redeem-social-copy"><span class="redeem-social-kicker">NO TE PIERDAS NINGUNO</span><h2>Códigos en <span>TikTok</span> y <span>YouTube</span></h2><p>Sigue a Birrias y encuentra nuevos códigos para desbloquear recompensas.</p></div>
+                <div class="redeem-social-links">
+                    <a class="redeem-social-link redeem-link-tiktok" href="https://www.tiktok.com/@birrias.edits?_r=1&amp;_t=ZN-99hOayIQrEE" target="_blank" rel="noopener noreferrer"><span aria-hidden="true">♪</span> TikTok <span aria-hidden="true">↗</span></a>
+                    <a class="redeem-social-link redeem-link-youtube" href="https://www.youtube.com/@BirriasBrawlStars" target="_blank" rel="noopener noreferrer"><span aria-hidden="true">▶</span> YouTube <span aria-hidden="true">↗</span></a>
+                    <a class="redeem-social-link redeem-link-discord" href="https://discord.gg/ZUtpPgaQz" target="_blank" rel="noopener noreferrer"><img class="redeem-social-icon" src="{{ url_for('static', filename='images/discord.png') }}" alt=""> Discord <span aria-hidden="true">↗</span></a>
+                </div>
+            </div>
+        </section>
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Birrias - Premios</title>
+    <!-- Tus estilos y librerías necesarias -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+
+    <main>
+        <section id="sec-premios" style="position: relative; display: block; width: 100%;">
+
+            <!-- Script de lógica de pestañas de premios -->
+            <script>
+                function cambiarCategoria(categoria, botonTab) {
+                    document.querySelectorAll('.premios-categoria').forEach(cat => {
+                        cat.style.display = 'none';
+                        cat.classList.remove('active');
+                    });
+
+                    document.querySelectorAll('.tab-btn').forEach(btn => {
+                        btn.classList.remove('active');
+                    });
+
+                    const catSeleccionada = document.getElementById('cat-' + categoria);
+                    if (catSeleccionada) {
+                        catSeleccionada.style.display = 'block';
+                        catSeleccionada.classList.add('active');
+                    }
+
+                    if (event && event.currentTarget) {
+                        event.currentTarget.classList.add('active');
+                    } else if (botonTab) {
+                        botonTab.classList.add('active');
+                    }
+                }
+            </script>
+
+            <script>
+                function abrirModalLogin() { document.getElementById('modal-acceso').style.display = 'flex'; }
+                function cerrarModalLogin() { document.getElementById('modal-acceso').style.display = 'none'; }
+
+                function loginConGoogle() { Swal.fire({ title: 'Google no está configurado', text: 'Inicia sesión con tu correo y contraseña.', icon: 'info', background: '#1b0a38', color: '#fff' }); }
+
+                function loginTradicional() {
+                    if (typeof window.procesarLogin === 'function') return window.procesarLogin();
+                    if (typeof window.ejecutarLogin === 'function') return window.ejecutarLogin();
+                    console.error('No se ha cargado la lógica de inicio de sesión.');
+                }
+
+                function verificarSesionGuardada() {
+                    const sesionGuardada = JSON.parse(localStorage.getItem('birrias_user_session'));
+                    if (sesionGuardada && sesionGuardada.isLoggedIn) {
+                        const btnLogin = document.getElementById('btn-login');
+                        if (btnLogin) btnLogin.style.display = 'none';
+                        const userInfo = document.getElementById('user-info');
+                        if (userInfo) userInfo.style.display = 'flex';
+                        const userNameText = document.getElementById('user-name-text');
+                        if (userNameText) userNameText.innerText = sesionGuardada.username;
+                        const userAvatarInitial = document.getElementById('user-avatar-initial');
+                        if (userAvatarInitial) userAvatarInitial.innerText = sesionGuardada.username.charAt(0).toUpperCase();
+                    }
+                }
+
+                window.onload = function() { verificarSesionGuardada(); };
+
+                window.logoutUser = function(event) {
+    if (event) event.stopImmediatePropagation();
+    
+    // Limpieza de almacenamiento local
+    const accionVolver = () => { window.location.href = '/'; };
+    const cerrarEnFirebase = window.signOut && window.auth ? window.signOut(window.auth) : Promise.reject(new Error('Firebase Auth no está listo'));
+    cerrarEnFirebase.then(() => {
+        ['usuario_actual', 'user', 'usuarioId', 'birrias_user_session'].forEach(key => localStorage.removeItem(key));
+        accionVolver();
+    }).catch(error => {
+        console.error('No se pudo cerrar sesión:', error);
+        Swal.fire({ title: 'No se pudo cerrar sesión', text: 'Comprueba tu conexión e inténtalo de nuevo.', icon: 'error', background: '#1b0a38', color: '#fff' });
+    });
+};
+
+document.addEventListener("DOMContentLoaded", () => {
+    const btnCerrar = document.getElementById('btn-cerrar-sesion');
+    if (btnCerrar) {
+        btnCerrar.replaceWith(btnCerrar.cloneNode(true));
+        document.getElementById('btn-cerrar-sesion').addEventListener('click', function(e) {
+            window.logoutUser(e);
+        });
+    }
+});
+
+                function comprarPremio(costo) {
+                    const coinsSpan = document.getElementById('coins-amount');
+                    const counterBadge = document.getElementById('birriacoins-counter');
+                    let coinsActuales = parseInt(coinsSpan.innerText) || 0;
+
+                    if (coinsActuales < costo) {
+                        Swal.fire({ title: 'Sin fondos', text: 'No tienes suficientes BirriaCoins.', icon: 'error', background: '#1b0a38', color: '#fff' });
+                        return;
+                    }
+
+                    counterBadge.classList.add('coins-anim-red');
+                    let objetivo = coinsActuales - costo;
+                    let paso = Math.max(1, Math.floor(costo / 30));
+
+                    let intervalo = setInterval(() => {
+                        coinsActuales -= paso;
+                        if (coinsActuales <= objetivo) {
+                            coinsActuales = objetivo;
+                            clearInterval(intervalo);
+                            setTimeout(() => { counterBadge.classList.remove('coins-anim-red'); }, 500);
+                            Swal.fire({ title: '¡COMPRA EXITOSA!', text: 'Has adquirido el artículo correctamente.', icon: 'success', background: '#1b0a38', color: '#fff', confirmButtonColor: '#10b981' });
+                        }
+                        coinsSpan.innerText = coinsActuales;
+                    }, 30);
+                }
+            </script>
+
+            <!-- ================= MODAL DE INICIO DE SESIÓN / REGISTRO ================= -->
+          
+
+    <!-- Perfil que aparece cuando ya estás dentro (oculto por defecto) -->
+    
+</div>
+
+<!-- 2. Ventana Flotante: Registro -->
+<!-- Ventana Flotante: Registro -->
+<!-- FORMULARIO DE REGISTRO MODIFICADO -->
+
+<div id="registro-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); z-index: 10005; align-items: center; justify-content: center; backdrop-filter: blur(5px);">
+    <div style="background: linear-gradient(135deg, #1b0a38 0%, #29124f 100%); border: 2px solid #7c3aed; border-radius: 20px; padding: 25px; width: 100%; max-width: 400px; box-shadow: 0 10px 30px rgba(0,0,0,0.6); position: relative; font-family: 'Inter', sans-serif; max-height: 90vh; overflow-y: auto;">
+        <button type="button" onclick="cerrarModalRegistro()" style="position: absolute; top: 15px; right: 15px; background: none; border: none; color: #a78bfa; font-size: 20px; cursor: pointer;">✕</button>
+        
+        <h2 style="font-family: 'Lilita One', cursive; color: #fff; text-align: center; font-size: 22px; margin-bottom: 15px; letter-spacing: 1px;">REGISTRO DE USUARIO</h2>
+        
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+            <!-- APARTADO DE USERNAME AÑADIDO -->
+            <div>
+                <label style="color: #cbd5e1; font-size: 10px; font-weight: 600; display: block; margin-bottom: 3px;">NOMBRE DE USUARIO</label>
+                <input type="text" id="unique-reg-username" placeholder="ej. birrioso_99" style="width: 100%; padding: 9px 12px; border-radius: 8px; border: 1px solid #7c3aed; background: #0f051d; color: white; font-size: 13px; box-sizing: border-box;">
+            </div>
+
+            <div>
+                <label style="color: #cbd5e1; font-size: 10px; font-weight: 600; display: block; margin-bottom: 3px;">CORREO ELECTRÓNICO</label>
+                <input type="email" id="unique-reg-email" placeholder="ej. birrioso@gmail.com" style="width: 100%; padding: 9px 12px; border-radius: 8px; border: 1px solid #7c3aed; background: #0f051d; color: white; font-size: 13px; box-sizing: border-box;">
+            </div>
+
+            <div style="display: flex; gap: 10px; margin-bottom: 18px;">
+    <!-- Campo Contraseña -->
+    <div style="flex: 1;">
+        <label style="display: block; font-size: 10px; color: #9ca3af; font-weight: bold; margin-bottom: 4px; text-transform: uppercase;">Contraseña</label>
+        <div style="position: relative;">
+            <input type="password" id="reg-pass" minlength="8" placeholder="Mínimo 8 caracteres" required style="width: 100%; background: #0f051d; border: 1px solid rgba(255,255,255,0.15); border-radius: 10px; padding: 10px 36px 10px 10px; color: #fff; font-size: 13px; outline: none; box-sizing: border-box;">
+            <button type="button" onclick="togglePassword('reg-pass', this)" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; font-size: 14px; padding: 0; color: #9ca3af;">
+                👁️
+            </button>
+        </div>
+    </div>
+    
+    <!-- Campo Repetir Contraseña -->
+    <div style="flex: 1;">
+        <label style="display: block; font-size: 10px; color: #9ca3af; font-weight: bold; margin-bottom: 4px; text-transform: uppercase;">Repetir Contraseña</label>
+        <div style="position: relative;">
+            <input type="password" id="reg-pass-confirm" minlength="8" placeholder="Mínimo 8 caracteres" required style="width: 100%; background: #0f051d; border: 1px solid rgba(255,255,255,0.15); border-radius: 10px; padding: 10px 36px 10px 10px; color: #fff; font-size: 13px; outline: none; box-sizing: border-box;">
+            <button type="button" onclick="togglePassword('reg-pass-confirm', this)" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; font-size: 14px; padding: 0; color: #9ca3af;">
+                👁️
+            </button>
+        </div>
+    </div>
+</div>
+
+            <div>
+                <label style="color: #cbd5e1; font-size: 10px; font-weight: 600; display: block; margin-bottom: 3px;">NACIONALIDAD</label>
+                <select id="unique-reg-nacionalidad" data-flag-picker>
+                    <option value="España" data-flag="es.png">España</option>
+                    <option value="México" data-flag="mx.png">México</option>
+                    <option value="Argentina" data-flag="ar.png">Argentina</option>
+                    <option value="Colombia" data-flag="co.png">Colombia</option>
+                    <option value="Chile" data-flag="cl.png">Chile</option>
+                    <option value="Perú" data-flag="pe.png">Perú</option>
+                    <option value="Otro" data-flag="other.png">Otro</option>
+                </select>
+            </div>
+
+            <div>
+                <label style="color: #cbd5e1; font-size: 10px; font-weight: 600; display: block; margin-bottom: 3px;">FECHA DE NACIMIENTO</label>
+                <input type="date" id="unique-reg-nacimiento" lang="es" style="width: 100%; padding: 9px 12px; border-radius: 8px; border: 1px solid #7c3aed; background: #0f051d; color: white; font-size: 13px; box-sizing: border-box; color-scheme: dark;">
+            </div>
+
+           <button type="button" id="btn-ejecutar-registro" style="margin-top: 5px; width: 100%; background: linear-gradient(180deg, #8b5cf6 0%, #6d28d9 100%); color: white; border: 2px solid #a78bfa; border-radius: 10px; padding: 11px; font-family: 'Lilita One', cursive; font-size: 15px; cursor: pointer; position: relative; z-index: 10;">
+    REGISTRARSE
+</button>
+        </div>
+    </div>
+</div>
+
+<!-- SECCIÓN PREMIOS -->
+<section id="sec-premios" class="content-section" style="display: none;">
+    <div class="premios-container-principal" style="width: 100%; position: relative; margin-top: 20px;">
+        
+        <!-- Pestañas de categoría -->
+        <div class="premios-tabs" style="display: flex; justify-content: center; gap: 12px; margin-bottom: 25px;">
+            <button class="tab-btn active" onclick="cambiarPestanaPremios('cat-todos', this)">TODOS</button>
+            <button class="tab-btn" onclick="cambiarPestanaPremios('cat-redes', this)">REDES SOCIALES</button>
+            <button class="tab-btn" onclick="cambiarPestanaPremios('cat-brawl', this)">BRAWL STARS</button>
+        </div>
+
+        <!-- CATEGORIA: TODOS -->
+        <div id="cat-todos" class="premios-categoria active" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 20px;">
+            <div id="modal-confirmacion" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 9999; justify-content: center; align-items: center;">
+    <div style="background: #1e1b2e; padding: 30px; border-radius: 15px; text-align: center; color: white; max-width: 400px; width: 90%; border: 2px solid #5a3e84;">
+        <h3 style="margin-top: 0; font-size: 22px;">¡Estás seguro?</h3>
+        <p id="texto-modal-premio" style="font-size: 16px; color: #d0c8e8;">¿Quieres canjear este artículo?</p>
+        <div style="margin-top: 20px; display: flex; justify-content: center; gap: 15px;">
+            <button onclick="ejecutarCompraFinal()" style="background: #2ecc71; color: white; border: none; padding: 10px 20px; font-weight: bold; border-radius: 8px; cursor: pointer;">Sí, ¡canjear!</button>
+            <button onclick="document.getElementById('modal-confirmacion').style.display='none'" style="background: #e74c3c; color: white; border: none; padding: 10px 20px; font-weight: bold; border-radius: 8px; cursor: pointer;">Cancelar</button>
+        </div>
+    </div>
+</div>
+
+<div id="modal-exito" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 9999; justify-content: center; align-items: center;">
+    <div style="background: #1e1b2e; padding: 30px; border-radius: 15px; text-align: center; color: white; max-width: 400px; width: 90%; border: 2px solid #2ecc71;">
+        <h3 style="margin-top: 0; color: #2ecc71; font-size: 22px;">¡COMPRA EXITOSA!</h3>
+        <p style="font-size: 16px;">Has adquirido el artículo correctamente.</p>
+        <button onclick="document.getElementById('modal-exito').style.display='none'" style="background: #2ecc71; color: white; border: none; padding: 10px 25px; font-weight: bold; border-radius: 8px; cursor: pointer; margin-top: 15px;">OK</button>
+    </div>
+</div>
+            <!-- Saludo en Video -->
+            <div class="reward-card">
+                <div class="reward-img-container" style="background: #450a0a;">
+                    <img src="{{ url_for('static', filename='images/youtube.png') }}" alt="YouTube" style="width: 80%; height: 80%; object-fit: contain;">
+                </div>
+                <div class="reward-info">
+                    <h2 class="reward-title">Saludo en Video</h2>
+                    <p class="reward-desc">¡Birrias te enviará un saludo personalizado en uno de sus próximos videos!</p>
+                    <span class="reward-status">⭐ Exclusivo</span>
+                </div>
+                <button class="reward-btn-price" onclick="comprarPremio(750)">
+                    <img src="{{ url_for('static', filename='images/birriacoin.png') }}" alt="Coin" style="width: 20px; height: 20px; margin-right: 5px;"> 750
+                </button>
+            </div>
+
+            <!-- VIP de Discord -->
+            <div class="reward-card">
+                <div class="reward-img-container">
+                    <span class="reward-badge-destacado">DESTACADO</span>
+                    <img src="{{ url_for('static', filename='images/discord.png') }}" alt="Discord VIP" class="reward-icon-small">
+                </div>
+                <div class="reward-info">
+                    <h2 class="reward-title">VIP de Discord</h2>
+                    <p class="reward-desc">Obtén el rango VIP exclusivo en el servidor con canales y roles especiales.</p>
+                    <span class="reward-status">⚡ Canje instantáneo</span>
+                </div>
+                <button class="reward-btn-price" onclick="comprarPremio(750)">
+                    <img src="{{ url_for('static', filename='images/birriacoin.png') }}" alt="Coin" style="width: 20px; height: 20px; margin-right: 5px;"> 750
+                </button>
+            </div>
+
+            <!-- Brawl Pass -->
+            <div class="reward-card">
+                <div class="reward-img-container" style="background: #1e1b4b;">
+                    <img src="{{ url_for('static', filename='images/brawlpass.png') }}" alt="Brawl Pass" style="width: 85%; height: 85%; object-fit: contain;">
+                </div>
+                <div class="reward-info">
+                    <h2 class="reward-title">Brawl Pass</h2>
+                    <p class="reward-desc">Desbloquea el pase de batalla actual y todas sus recompensas exclusivas.</p>
+                    <span class="reward-status">🔥 Muy solicitado</span>
+                </div>
+                <button class="reward-btn-price" onclick="comprarPremio(2000)">
+                    <img src="{{ url_for('static', filename='images/birriacoin.png') }}" alt="Coin" style="width: 20px; height: 20px; margin-right: 5px;"> 2000
+                </button>
+            </div>
+
+        </div>
+
+        <!-- CATEGORIA: REDES SOCIALES -->
+        <div id="cat-redes" class="premios-categoria" style="display: none; flex-wrap: wrap; justify-content: center; gap: 20px;">
+            <div class="reward-card">
+                <div class="reward-img-container" style="background: #450a0a;">
+                    <img src="{{ url_for('static', filename='images/youtube.png') }}" alt="YouTube" style="width: 80%; height: 80%; object-fit: contain;">
+                </div>
+                <div class="reward-info">
+                    <h2 class="reward-title">Saludo en Video</h2>
+                    <p class="reward-desc">¡Birrias te enviará un saludo personalizado en uno de sus próximos videos!</p>
+                    <span class="reward-status">⭐ Exclusivo</span>
+                </div>
+                <button class="reward-btn-price" onclick="comprarPremio(750)">
+                    <img src="{{ url_for('static', filename='images/birriacoin.png') }}" alt="Coin" style="width: 20px; height: 20px; margin-right: 5px;"> 750
+                </button>
+            </div>
+        </div>
+
+        <!-- CATEGORIA: BRAWL STARS -->
+        <div id="cat-brawl" class="premios-categoria" style="display: none; flex-wrap: wrap; justify-content: center; gap: 20px;">
+            <div class="reward-card">
+                <div class="reward-img-container" style="background: #1e1b4b;">
+                    <img src="{{ url_for('static', filename='images/brawlpass.png') }}" alt="Brawl Pass" style="width: 85%; height: 85%; object-fit: contain;">
+                </div>
+                <div class="reward-info">
+                    <h2 class="reward-title">Brawl Pass</h2>
+                    <p class="reward-desc">Desbloquea el pase de batalla actual y todas sus recompensas exclusivas.</p>
+                    <span class="reward-status">🔥 Muy solicitado</span>
+                </div>
+                <button class="reward-btn-price" onclick="comprarPremio(2000)">
+                    <img src="{{ url_for('static', filename='images/birriacoin.png') }}" alt="Coin" style="width: 20px; height: 20px; margin-right: 5px;"> 2000
+                </button>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<script type="module">
+    import { auth, db } from "/static/js/firebase-config.js";
+    import { onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
+    import { doc, setDoc, getDoc, updateDoc, serverTimestamp, collection, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
+    // La persistencia se configura en script.js antes del inicio de sesión.
+
+    // 🔑 EXPOSICIÓN GLOBAL OBLIGATORIA PARA LA CONSOLA Y TUS FUNCIONES
+    window.auth = auth;
+    window.db = db;
+    window.onAuthStateChanged = onAuthStateChanged;
+    window.createUserWithEmailAndPassword = createUserWithEmailAndPassword;
+    window.signInWithEmailAndPassword = signInWithEmailAndPassword;
+    window.signOut = signOut;
+    window.logoutUser = async function(event) {
+        if (event) { event.preventDefault(); event.stopPropagation(); }
+        try { await signOut(auth); ['usuario_actual','user','usuarioId','birrias_user_session'].forEach(key => localStorage.removeItem(key)); location.href='/'; }
+        catch (error) { console.error('Error al cerrar sesión:', error); Swal.fire({ title:'No se pudo cerrar sesión', text:'Comprueba tu conexión e inténtalo de nuevo.', icon:'error', background:'#1b0a38', color:'#fff' }); }
+    };
+    window.doc = doc;
+    window.setDoc = setDoc;
+    window.getDoc = getDoc;
+    window.updateDoc = updateDoc;
+    window.serverTimestamp = serverTimestamp;
+
+    console.log("Firebase inicializado correctamente y disponible en window.auth");
+
+    // Mantener sesión activa y actualizar saldo o datos de perfil automáticamente
+    onAuthStateChanged(auth, async (user) => {
+        if (user) {
+            console.log("Sesión activa para:", user.email);
+            if (typeof window.cargarDatosPerfil === 'function') {
+                window.cargarDatosPerfil();
+            }
+        } else {
+            console.log("No hay sesión activa.");
+        }
+    });
+
+
+    // 1. Control global de modales
+    window.abrirModalAcceso = function() {
+        const modal = document.getElementById('modal-acceso');
+        if (modal) modal.style.display = 'flex';
+    };
+
+    window.cerrarModalLogin = function() {
+        const modal = document.getElementById('modal-acceso');
+        if (modal) modal.style.display = 'none';
+    };
+
+    window.abrirModalRegistro = function() {
+        const modal = document.getElementById('modal-acceso');
+        if (modal) modal.style.display = 'flex';
+        if (typeof window.cambiarTab === 'function') window.cambiarTab('registro');
+    };
+
+    window.cerrarModalRegistro = function() {
+        const regModal = document.getElementById('registro-modal');
+        if (regModal) regModal.style.display = 'none';
+    };
+
+    // 2. Función auxiliar para crear datos en Firestore
+    async function crearDatosUsuarioBD(user, nacionalidadExtra = 'España', nacimientoExtra = '') {
+        const userRef = doc(db, "usuarios", user.uid);
+        const userSnap = await getDoc(userRef);
+
+        if (!userSnap.exists()) {
+            await setDoc(userRef, {
+                uid: user.uid,
+                email: user.email,
+                nombre: user.displayName || user.email.split('@')[0],
+                birriacoins: 100,
+                nacionalidad: nacionalidadExtra,
+                nacimiento: nacimientoExtra,
+                fechaNacimiento: nacimientoExtra,
+                tiempoUsoMinutos: 0,
+                createdAt: new Date()
+            });
+        }
+    }
+
+    // 3. Login por Email y Contraseña
+    window.ejecutarLogin = async function() {
+        if (typeof window.procesarLogin === 'function') return window.procesarLogin();
+        const emailInput = document.getElementById('login-email');
+        const passInput = document.getElementById('login-password');
+        if (!emailInput || !passInput || !emailInput.value.trim() || !passInput.value) {
+            Swal.fire({ title: 'Faltan datos', text: 'Introduce tu correo y contraseña.', icon: 'warning', background: '#1b0a38', color: '#fff' });
+            return;
+        }
+        try {
+            const credential = await signInWithEmailAndPassword(auth, emailInput.value.trim(), passInput.value);
+            const user = credential.user;
+            const userRef = doc(db, 'usuarios', user.uid);
+            const userSnap = await getDoc(userRef);
+            const datos = userSnap.exists() ? userSnap.data() : {
+                uid: user.uid, email: user.email, nombre: user.email.split('@')[0],
+                username: user.email.split('@')[0], birriacoins: 100
+            };
+            datos.uid = user.uid;
+            datos.email = user.email;
+            if (!userSnap.exists()) await setDoc(userRef, { ...datos, fechaCreacion: serverTimestamp() }, { merge: true });
+            localStorage.setItem('usuario_actual', JSON.stringify(datos));
+            localStorage.setItem('user', JSON.stringify(datos));
+            localStorage.setItem('usuarioId', user.uid);
+            window.location.href = '/perfil';
+        } catch (error) {
+            console.error('Error al iniciar sesión:', error);
+            Swal.fire({ title: 'No se pudo iniciar sesión', text: error.message || 'Comprueba el correo y la contraseña.', icon: 'error', background: '#1b0a38', color: '#fff' });
+        }
+    };
+
+    // 4. REGISTRO COMPLETO (Corregido y unificado)
+
+    // 6. Cargar Ranking
+    window.cargarRanking = async function() {
+        const contenedorRanking = document.getElementById('leaderboard-list');
+        if (!contenedorRanking) return;
+
+        contenedorRanking.innerHTML = "<p>Cargando ranking...</p>";
+
+        try {
+            const q = query(collection(db, "ranking_publico"), orderBy("birriacoins", "desc"), limit(50));
+            const querySnapshot = await getDocs(q);
+            
+            let html = "";
+            let puesto = 1;
+
+            querySnapshot.forEach((docSnap) => {
+                const data = docSnap.data();
+                const nombre = data.nombre || data.username || "Usuario";
+                const monedas = (data.birriacoins || 0).toLocaleString();
+                const horasUso = ((data.tiempoUsoMinutos || 0) / 60).toFixed(1);
+                
+                const banderas = { '🇪🇸 España': '🇪🇸', '🇲🇽 México': '🇲🇽', '🇦🇷 Argentina': '🇦🇷', '🇨🇴 Colombia': '🇨🇴', '🇨🇱 Chile': '🇨🇱', '🇵🇪 Perú': '🇵🇪', '🇺🇸 Estados Unidos': '🇺🇸', '🇪🇸': '🇪🇸', '🇲🇽': '🇲🇽' };
+                const bandera = banderas[data.nacionalidad] || '🌍';
+
+                html += `
+                    <div class="ranking-item">
+                        <span class="puesto">#${puesto}</span>
+                        <span class="bandera">${bandera}</span>
+                        <span class="nombre">${nombre}</span>
+                        <span class="tiempo">⏱️ ${horasUso}h</span>
+                        <span class="monedas">🪙 ${monedas}</span>
+                    </div>
+                `;
+                puesto++;
+            });
+
+            contenedorRanking.innerHTML = html;
+        } catch (error) {
+            if (error.code === 'permission-denied') {
+                console.warn("El ranking no está disponible: las reglas actuales de Firestore no permiten leerlo.");
+                contenedorRanking.innerHTML = "<p>El ranking no está disponible temporalmente.</p>";
+            } else {
+                console.error("Error al cargar el ranking:", error);
+                contenedorRanking.innerHTML = "<p>Hubo un error al cargar el ranking.</p>";
+            }
+        }
+    };
+
+    // 8. Mantener sesión activa y actualizar saldo (Modular SDK v12)
+    onAuthStateChanged(auth, async (user) => {
+        const btnNavAuth = document.getElementById('btn-nav-auth');
+        const displayMonedas = document.getElementById('user-birriacoins') || document.getElementById('coins-amount');
+
+        if (user) {
+            if (typeof cerrarModalLogin === "function") cerrarModalLogin();
+            if (typeof cerrarModalRegistro === "function") cerrarModalRegistro();
+
+            if (btnNavAuth) {
+                btnNavAuth.style.display = "none";
+            }
+
+            const userRef = doc(db, "usuarios", user.uid);
+            const userSnap = await getDoc(userRef);
+            
+            if (userSnap.exists()) {
+                const monedasReales = userSnap.data().birriacoins ?? 0;
+                if (displayMonedas) displayMonedas.textContent = monedasReales.toLocaleString();
+                if (typeof window.birriacoins !== 'undefined') {
+                    window.birriacoins = monedasReales;
+                }
+            }
+        } else {
+            if (btnNavAuth) {
+                btnNavAuth.style.display = "inline-block";
+                btnNavAuth.textContent = "Iniciar Sesión";
+                btnNavAuth.style.background = "#facc15";
+                btnNavAuth.style.color = "#1e1b4b";
+                btnNavAuth.onclick = () => abrirModalAcceso();
+            }
+            if (displayMonedas) displayMonedas.textContent = "0";
+        }
+    });
+
+    // 9. Guardar monedas en Firebase (Modular SDK v12)
+    window.guardarMonedasEnFirebase = async function(nuevaCantidad) {
+        const user = auth.currentUser;
+        if (!user) {
+            console.warn("⚠️ No hay usuario autenticado al intentar guardar.");
+            return;
+        }
+
+        try {
+            const userRef = doc(db, "usuarios", user.uid);
+            await setDoc(userRef, {
+                birriacoins: nuevaCantidad
+            }, { merge: true });
+            console.log("✅ Gasto guardado en Firebase correctamente:", nuevaCantidad);
+        } catch (e) {
+            console.error("❌ Error al guardar monedas:", e.message);
+        }
+    };
+</script>
+<!-- 1. Carga los SDKs de Firebase Compat primero -->
+<!-- 1. Carga los SDKs de Firebase Compat primero -->
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+
+<!-- 2. Tu archivo de inicialización (donde configuras firebase.initializeApp(...)) -->
+
+<!-- 3. Finalmente tu archivo trivia.js -->
+<script src="{{ url_for('static', filename='js/trivia.js') }}?v=99.9"></script>
+</script>
+</script>
+
+<div id="modal-premio-ruleta" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 5, 20, 0.9); z-index: 10005; align-items: center; justify-content: center; padding: 20px; overflow: hidden;">
+    <div style="background: linear-gradient(135deg, #2b1b3d 0%, #181026 100%); border: 2px solid rgba(255, 215, 0, 0.4); border-radius: 24px; padding: 30px; width: 100%; max-width: 400px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.8); position: relative;">
+        
+        <button onclick="cerrarModalPremio()" style="position: absolute; top: 15px; right: 15px; background: transparent; border: none; color: #fff; font-size: 20px; cursor: pointer;">✕</button>
+
+        <h3 style="font-family: 'Lilita One', cursive; color: #fff; font-size: 24px; margin-bottom: 20px;">🎁 ¡PREMIO! 🎁</h3>
+        
+        <div style="margin: 20px auto; width: 90px; height: 90px; background: radial-gradient(circle, #ffd700 0%, #ff8c00 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 25px rgba(255,215,0,0.6); border: 4px solid #fff;">
+            <img id="img-premio-ganado" src="/static/images/birriacoin.png" alt="Premio" style="width: 55px; height: 55px;">
+        </div>
+
+        <div style="background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; padding: 15px; margin-bottom: 25px;">
+            <span id="texto-premio-ganado" style="font-family: 'Lilita One', cursive; font-size: 20px; color: #fff; display: block;">50 BIRRIACOINS</span>
+        </div>
+
+        <button onclick="cerrarModalPremio()" style="width: 100%; background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%); border: none; padding: 14px; border-radius: 14px; font-family: 'Lilita One', cursive; font-size: 16px; color: #ffffff; cursor: pointer; box-shadow: 0 6px 20px rgba(255, 65, 108, 1);">CONTINUAR</button>
+    </div>
+</div>
+
+
+    <div id="modal-premio-ruleta" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 5, 20, 0.9); z-index: 10005; align-items: center; justify-content: center; padding: 20px; overflow: hidden;">
+    <div class="modal-contenido-premio" style="background: linear-gradient(135deg, #2b1b3d 0%, #181026 100%); border: 2px solid rgba(255, 215, 0, 0.4); border-radius: 24px; padding: 30px; width: 100%; max-width: 400px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.8); position: relative;">
+        
+        <!-- Contenedor de Confeti Animado -->
+        <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; overflow: hidden; border-radius: 24px; z-index: 1;">
+            <div class="confeti-item c-rojo" style="left: 10%; animation-delay: 0s;"></div>
+            <div class="confeti-item c-amarillo" style="left: 25%; animation-delay: 0.4s;"></div>
+            <div class="confeti-item c-azul" style="left: 40%; animation-delay: 0.2s;"></div>
+            <div class="confeti-item c-verde" style="left: 60%; animation-delay: 0.7s;"></div>
+            <div class="confeti-item c-rosa" style="left: 75%; animation-delay: 0.3s;"></div>
+            <div class="confeti-item c-amarillo" style="left: 90%; animation-delay: 0.5s;"></div>
+        </div>
+
+        <!-- Botón cerrar (X) -->
+        <button onclick="cerrarModalPremio()" style="position: absolute; top: 15px; right: 15px; background: transparent; border: none; color: #fff; font-size: 20px; cursor: pointer; z-index: 3;">✕</button>
+
+        <h3 style="font-family: 'Lilita One', cursive; color: #fff; font-size: 24px; margin-bottom: 20px; position: relative; z-index: 2;">🎁 ¡PREMIO! 🎁</h3>
+        
+        <!-- Icono/Moneda con animación de sacudida y brillo equilibrado -->
+        <div class="contenedor-moneda-animada" style="margin: 20px auto; width: 90px; height: 90px; background: radial-gradient(circle, #e6c652 0%, #cc7a00 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 20px rgba(230,198,82,0.5); border: 4px solid #fff; position: relative; z-index: 2;">
+            <img id="img-premio-ganado" src="/static/images/birriacoin.png" alt="Premio" style="width: 55px; height: 55px; object-fit: contain;">
+        </div>
+
+        <!-- Caja de texto del monto ganado -->
+        <div style="background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; padding: 15px; margin-bottom: 25px; position: relative; z-index: 2;">
+            <span id="texto-premio-ganado" style="font-family: 'Lilita One', cursive; font-size: 20px; color: #fff; display: block;">50 BIRRIACOINS</span>
+        </div>
+
+        <!-- Botón CONTINUAR -->
+        <button onclick="cerrarModalPremio()" style="width: 100%; background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%); border: none; padding: 14px; border-radius: 14px; font-family: 'Lilita One', cursive; font-size: 16px; color: #ffffff; cursor: pointer; box-shadow: 0 6px 20px rgba(255, 65, 108, 0.4); position: relative; z-index: 2;">CONTINUAR</button>
+    </div>
+</div>
+
+<style>
+/* Animación de entrada con sacudida y rebote para la moneda */
+@keyframes sacudidaMoneda {
+    0% { transform: scale(0) rotate(0deg); }
+    50% { transform: scale(1.15) rotate(-8deg); }
+    70% { transform: scale(0.95) rotate(6deg); }
+    85% { transform: scale(1.05) rotate(-3deg); }
+    100% { transform: scale(1) rotate(0deg); }
+}
+
+.contenedor-moneda-animada {
+    animation: sacudidaMoneda 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+}
+
+/* Animación de caída fluida para las partículas de confeti */
+@keyframes caerConfetiAnimado {
+    0% {
+        transform: translateY(-20px) rotate(0deg);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(380px) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+.confeti-item {
+    position: absolute;
+    width: 8px;
+    height: 14px;
+    top: -10px;
+    opacity: 0.9;
+    animation: caerConfetiAnimado 2.2s infinite linear;
+}
+
+
+
+.c-rojo { background: #ff416c; }
+.c-amarillo { background: #ffd700; }
+.c-azul { background: #38bdf8; }
+.c-verde { background: #4ade80; }
+.c-rosa { background: #ec4899; }
+</style>
+<script type="module" src="{{ url_for('static', filename='js/script.js') }}?v=8"></script>
+<script src="{{ url_for('static', filename='js/password-strength.js') }}?v=1" defer></script>
+<script src="{{ url_for('static', filename='js/birthdate-picker.js') }}?v=1" defer></script>
+<script src="{{ url_for('static', filename='js/flag-picker.js') }}?v=1" defer></script>
+<script src="{{ url_for('static', filename='js/racha.js') }}" defer></script>
+<script src="{{ url_for('static', filename='js/racha-ui.js') }}" defer></script>
+<script src="{{ url_for('static', filename='js/redeem-codes.js') }}?v=3" defer></script>
+</body>
+</html>
+

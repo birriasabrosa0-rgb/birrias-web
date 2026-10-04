@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" role="img" aria-label="Llama de racha animada">
+  <defs>
+    <linearGradient id="outer" x1="0" y1="0" x2=".8" y2="1">
+      <stop offset="0" stop-color="#fff276"/>
+      <stop offset=".38" stop-color="#ffb21f"/>
+      <stop offset="1" stop-color="#ff5a24"/>
+    </linearGradient>
+    <linearGradient id="middle" x1=".2" y1="0" x2=".8" y2="1">
+      <stop offset="0" stop-color="#fff94e"/>
+      <stop offset=".55" stop-color="#ff8e18"/>
+      <stop offset="1" stop-color="#f53b4e"/>
+    </linearGradient>
+    <linearGradient id="core" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fffef0"/>
+      <stop offset="1" stop-color="#ffe754"/>
+    </linearGradient>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="170%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="4" result="blur"/>
+      <feOffset dy="5" result="offset"/>
+      <feComponentTransfer><feFuncA type="linear" slope=".38"/></feComponentTransfer>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <style>
+      .flame { transform-origin: 120px 218px; animation: flame-bob .72s ease-in-out infinite alternate; }
+      .inner { transform-origin: 120px 195px; animation: inner-flicker .48s ease-in-out infinite alternate; }
+      .spark { transform-box: fill-box; transform-origin: center; animation: spark-pop .8s ease-in-out infinite; }
+      .spark.s2 { animation-delay: -.35s; }
+      .spark.s3 { animation-delay: -.58s; }
+      @keyframes flame-bob { from { transform: skewX(-2deg) scale(.97,1); } to { transform: skewX(2deg) scale(1.02,.97); } }
+      @keyframes inner-flicker { from { transform: scale(.92,1) translateY(2px); } to { transform: scale(1.05,.95) translateY(-2px); } }
+      @keyframes spark-pop { 0%,100% { opacity:.25; transform: scale(.65) rotate(-8deg); } 50% { opacity:1; transform: scale(1.12) rotate(8deg); } }
+    </style>
+  </defs>
+  <ellipse cx="120" cy="218" rx="57" ry="10" fill="#35143f" opacity=".2"/>
+  <g class="flame" filter="url(#shadow)" stroke="#35143f" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M120 15 C128 42 158 55 155 84 C177 69 177 50 173 39 C206 66 222 105 216 146 C211 191 175 222 126 228 C78 234 37 205 26 166 C14 124 31 82 63 54 C58 81 72 98 89 103 C84 74 98 47 120 15Z" fill="url(#outer)" stroke-width="11"/>
+    <path class="inner" d="M119 77 C126 102 149 113 146 137 C161 128 166 115 165 102 C185 121 193 148 185 172 C178 197 153 211 126 211 C97 211 72 195 66 170 C60 149 69 129 84 114 C84 135 95 145 106 147 C101 121 108 96 119 77Z" fill="url(#middle)" stroke-width="8"/>
+    <path class="inner" d="M121 128 C125 145 139 151 137 168 C147 162 150 154 149 147 C162 163 162 181 151 193 C141 204 123 207 109 199 C95 191 91 177 96 164 C100 154 108 147 114 143 C112 156 117 162 123 164 C119 150 119 139 121 128Z" fill="url(#core)" stroke-width="6"/>
+    <path d="M52 136 C56 121 65 110 75 103" fill="none" stroke="#fff4a0" stroke-width="7" opacity=".8"/>
+    <path d="M187 111 C193 124 195 137 192 148" fill="none" stroke="#fff4a0" stroke-width="6" opacity=".75"/>
+  </g>
+  <g fill="#fff36b" stroke="#35143f" stroke-width="4" stroke-linejoin="round">
+    <path class="spark s1" d="M35 79 L42 94 L58 97 L45 107 L47 123 L35 114 L21 121 L26 105 L15 94 L31 93Z"/>
+    <path class="spark s2" d="M192 48 L198 60 L211 62 L201 71 L203 84 L192 77 L181 83 L185 70 L176 61 L189 59Z"/>
+    <path class="spark s3" d="M204 173 L209 183 L220 185 L212 193 L214 204 L204 198 L194 203 L198 192 L190 184 L201 182Z"/>
+  </g>
+</svg>
