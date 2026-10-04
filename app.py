@@ -36,16 +36,51 @@ app.config['PASSWORD_RESET_SECRET'] = os.environ.get('PASSWORD_RESET_SECRET')
 db = SQLAlchemy(app)
 mail = Mail(app)
 
-# ================= CONEXIÓN A REDIS (NUEVO) =================
-try:
-    # Memurai o Docker usan el puerto 6379 por defecto
-    r = redis.Redis(host='localhost', port=6379, db=0, decode_responses=True)
-    r.ping()  # Comprobar que Redis está vivo
-    print("✅ Conectado a Redis. El caché persistente está activo.")
-except Exception as e:
-    print(f"⚠️ No se pudo conectar a Redis: {e}. Usando caché en memoria.")
-    r = None
+# ================= CONEXIÓN A REDIS (UPSTASH) =================
+UPSTASH_URL = os.environ.get("UPSTASH_REDIS_REST_URL")
+UPSTASH_TOKEN = os.environ.get("UPSTASH_REDIS_REST_TOKEN")
 
+class UpstashRedis:
+    """Envoltorio para que Upstash se comporte como un Redis local."""
+    def __init__(self, url, token):
+        self.url = url
+        self.token = token
+        self.headers = {"Authorization": f"Bearer {token}"} if token else {}
+
+    def setex(self, key, ttl, value):
+        """Equivalente a r.setex(key, ttl, value) de Redis local."""
+        if not self.url or not self.token:
+            return False
+        try:
+            res = requests.post(f"{self.url}/set/{key}?EX={ttl}", headers=self.headers, data=value)
+            return res.status_code == 200
+        except Exception as e:
+            print(f"Error en Upstash setex: {e}")
+            return False
+
+    def get(self, key):
+        """Equivalente a r.get(key) de Redis local."""
+        if not self.url or not self.token:
+            return None
+        try:
+            res = requests.get(f"{self.url}/get/{key}", headers=self.headers)
+            if res.status_code == 200:
+                return res.json().get("result")
+            return None
+        except Exception as e:
+            print(f"Error en Upstash get: {e}")
+            return None
+
+    def ping(self):
+        return bool(self.url and self.token)
+
+# Inicializar el cliente (r será un objeto UpstashRedis)
+r = UpstashRedis(UPSTASH_URL, UPSTASH_TOKEN)
+if r.ping():
+    print("✅ Conectado a Upstash Redis. El caché persistente está activo.")
+else:
+    print("⚠️ Upstash no configurado. Usando caché en memoria.")
+    r = None
 # ================= CONFIGURACIÓN API BRAWL STARS =================
 BASE_URL = "https://api.brawlstars.com/v1"
 _BRAWL_API_CACHE = {}
